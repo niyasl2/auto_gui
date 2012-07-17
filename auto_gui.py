@@ -797,12 +797,20 @@ class CallboxTest():
     def cell_init(self):
         # Define input and output path for a standard cell, including
         # signal routing and external attenuation.
+        if common.CARDHU:
+            self.callbox.write("ROUTe:LTE:SIGN:SCENario:SCELl RF2C,RX1,RF2C,TX1")
+            return
+            
         self.callbox.write("ROUTe:LTE:SIGN:SCENario:SCELl RF1C,RX1,RF1C,TX1")
         # self.callbox.write("CONFigure:LTE:SIGN:RFSettings:EATTenuation:OUTPut 2") # NEEDED ?
         # self.callbox.write("CONFigure:LTE:SIGN:RFSettings:EATTenuation:INPut 2") # NEEDEED ?
 
     def cell_setup_mimo(self):
         # Define paths for MIMO.
+        if common.CARDHU:
+            self.callbox.write("ROUTe:LTE:SIGN:SCENario:MIMO22 RF2C,RX1,RF2C,TX1,RF4C,TX2")
+            return
+            
         self.callbox.write("ROUTe:LTE:SIGN:SCENario:MIMO22 RF1C,RX1,RF1C,TX1,RF3C,TX2")
 
     def config_band(self):
