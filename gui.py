@@ -941,7 +941,7 @@ class MyForm(wx.Frame):
         iCT.Init_Auto(self.branch_4test,self.band_4test,self.scenario_4test)
         if self.testchoice == 0:
             print "Call Auto scheduler"
-            iCT.start(Resume=self.resume.IsChecked())
+            iCT.start(Res=self.resume.IsChecked())
         elif self.testchoice == 1:
             if self.flash.IsChecked() == True and self.entry.GetLabel() != "":
                 print "Run Test with Flashing"
