@@ -6,6 +6,7 @@ chart/*.*
 *.jpg
 regression/*.*
 *.pyc
+log_message.txt
 
 #################
 ## Eclipse
