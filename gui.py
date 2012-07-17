@@ -242,8 +242,8 @@ class MyForm(wx.Frame):
        # sbsLogSection.Add(self.stLogSection, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL,10)
         bsLogSection = wx.BoxSizer ( wx.HORIZONTAL )
         self.log = wx.TextCtrl(self.pl, wx.ID_ANY, size=(1150,300),style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
-        #self.msg = wx.TextCtrl(self.pl, wx.ID_ANY, size=(800,100),style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
-
+        self.log.SetBackgroundColour("#000000")
+        self.log.SetForegroundColour('#ffffff')
         bsLogSection.Add(self.log,1,wx.ALL,10)
         #bsLogSection.Add(self.msg,1,wx.ALL,10)
 
