@@ -2206,7 +2206,7 @@ class CallboxTest():
                 self.check_regression_value(value, comparator)
             except:
                 print "check_regression_value Exception"
-                style = status_OK_style
+                raise
         write_row.write(self.current_col, value, style)
         self.current_col += 1
 

@@ -14,6 +14,7 @@ import os,sys,shutil,subprocess,time,ssh,re
 from global_var import *
 from FindRegression import *
 import chart
+import common
 
 class Tools:
 
@@ -28,16 +29,15 @@ class Tools:
         return BUILD_FAILED
 
     def find_index(self,lst,item):
-
         if not isinstance(item,basestring):
             item = item[0]
 
         for i in range(0,len(lst)):
             if(lst[i]==item):
+                if lst == BRANCH_ALLOWED and common.CARDHU:
+                    return ((len(BRANCH_ALLOWED)*(len(PLATFORM_ALLOWED)-1))+i)
                 return i
-        print "List",lst
-        print "item",item
-        print "No Item Found"
+      
         return 0
         
     def distclean(self,branch,variant="tango-internal"):
@@ -238,4 +238,11 @@ def main():
 
 if __name__ == '__main__':
     #main()
-    print Tools().get_CL_list(build_dir[0],P4BRANCH[0],472914,472920)#_build('cr3')
+    #print Tools().get_CL_list(build_dir[0],P4BRANCH[0],472914,472920)#_build('cr3')
+    
+    for platform in PLATFORM_ALLOWED:
+        if platform == 'cardhu':
+            common.CARDHU = True
+        for branch in BRANCH_ALLOWED:
+            i = Tools().find_index(BRANCH_ALLOWED,branch)
+            print EXCEL_FLIST[i],i

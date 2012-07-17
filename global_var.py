@@ -3,6 +3,7 @@ from xlwt import Workbook, easyxf
 
 BAND_TANGO_ALLOWED = [4,17]
 BRANCH_ALLOWED = ['main','cr3','ST']
+PLATFORM_ALLOWED = ['win8','woa']
 #wlinux = "/home/gcflab/workspace/callbox-test/"
 wlinux = "/eng/nsait/workspace/nsait-main/"
 #wwin = os.path.join("serv2", "home", "gcflab","workspace","callbox-test")
@@ -16,9 +17,11 @@ EXCEL_FLIST = []
 for branch in BRANCH_ALLOWED:
     build_dir.append(wlinux+"software/%s.br/product/datacard/modem/build/"%branch)
     MODEM_BINARY_LOC.append(r"\\%s\software\%s.br\product\datacard\modem\build\dxp-%s-obj\EV4\\"%(wwin,branch,variant))
-    EXCEL_FLIST.append('Results_%s.xls'%branch)
-    #EXCEL_FLIST.append(r'\\serv2\eng\nsait\workspace\Results_%s.xls'%branch)
 
+for platform in PLATFORM_ALLOWED:
+    for branch in BRANCH_ALLOWED:
+        EXCEL_FLIST.append('Results_%s_%s.xls'%(branch,platform))
+        #EXCEL_FLIST.append(r'\\serv2\eng\nsait\workspace\Results_%s.xls'%branch)
 
 P4BRANCH = []
 P4BRANCH.append("//software/main.br/")
@@ -28,7 +31,7 @@ COREDUMP_LOC = os.path.join("serv2", "eng", "nsait","workspace","nsait-main","so
 #CHART_LOC = os.path.join("serv2.icerasemi.com", "home", "gcflab","workspace","callbox-test","chart")
 #CHART_LOC ='\\\\serv2.icerasemi.com\home\gcflab\workspace\callbox-test\chart\\'
 
-auto_callbox_loc = r"C:\Users\nsait\Desktop\auto_gui"
+#auto_callbox_loc = r"C:\Users\nsait\Desktop\auto_gui"
 SYS_STATUS = ['OK','DOWNLOAD_ONLY','ERROR']
 BINARY_LIB = "\\\\serv2\\eng\\nsait\\workspace\\binary_lib\\"
 RESULT_LOC = "\\\\serv2\\home\\gcflab\\workspace\\"

@@ -96,6 +96,7 @@ class Untar:
         tmp_gz =tmp+ 'xyz.gz'
         tmp_rar = tmp+ 'xyz.rar'
         name = "99999.zlib.wrapped"
+        current_dir = os.getcwd()
         try:
             os.mkdir(tmp)
         except:
@@ -127,7 +128,7 @@ class Untar:
         except:
             pass
 
-        os.chdir(auto_callbox_loc)
+        os.chdir(current_dir)
 
 class At_debug:
     def get_coredump(self,branch,cl,scen_name,option):

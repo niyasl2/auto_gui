@@ -133,7 +133,7 @@ class Regression:
 
         iCT = auto_gui2.CallboxTest()
         
-        i = self.find_index(BRANCH_ALLOWED,branch_4test)
+        i = Tools().find_index(BRANCH_ALLOWED,branch_4test)
 
         print "[FR][f_r] Block 1 "
         while True :
@@ -171,19 +171,6 @@ class Regression:
 ##        self.demo_val = [5,5,5,5,5,5,10]
         self.build_failure = []
         self.build_failure.append("0")
-
-    def find_index(self,lst,item):
-
-        if not isinstance(item,basestring):
-            item = item[0]
-
-        for i in range(0,len(lst)):
-            if(lst[i]==item):
-                return i
-        print "List",lst
-        print "item",item
-        print "No Item Found"
-        return 0
 
     def failed_build(self,cl):
         for i in self.build_failure:
