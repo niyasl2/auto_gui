@@ -101,7 +101,7 @@ class Tools:
         result = server.execute(cmd)
         return result
         
-   def ssh_clientGCF(self,cmd):
+    def ssh_clientGCF(self,cmd):
         server = ssh.Connection(host='sxdbld02', username='gcflab', password='LG!)67wn')
         #server = ssh.Connection(host='frsys1', username='nsait', password='M@ilhot123')
         result = server.execute(cmd)
@@ -181,12 +181,12 @@ class Tools:
         print "Msg to Send",msg
         cmd = "echo \"%s\" > txt_msg ; cat txt_msg | ssh frlts mail -s \"Test_Issues1\" nsait@nvidia.com " %(msg)
         self.ssh_clientGCF(cmd)
-        time.sleep(1)
-        cmd = "echo \"%s\" > txt_msg ; cat txt_msg | mail -s \"Test_Issues2\" nsait@nvidia.com " %(msg)
-        self.ssh_clientGCF(cmd)
-        time.sleep(1)
-        cmd = "echo \"%s\" > txt_msg ; mail -s \"Test_Issues3\" nsait@nvidia.com < txt_msg" %(msg)
-        self.ssh_clientGCF(cmd)
+        # time.sleep(1)
+        # cmd = "echo \"%s\" > txt_msg ; cat txt_msg | mail -s \"Test_Issues2\" nsait@nvidia.com " %(msg)
+        # self.ssh_clientGCF(cmd)
+        # time.sleep(1)
+        # cmd = "echo \"%s\" > txt_msg ; mail -s \"Test_Issues3\" nsait@nvidia.com < txt_msg" %(msg)
+        # self.ssh_clientGCF(cmd)
         
         
     def sendMail(self,msg):
