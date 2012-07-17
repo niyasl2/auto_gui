@@ -12,7 +12,7 @@
 import sys, time,  os, os.path, subprocess, re
 from global_var import *
 import common
-from cardhu2 import *
+from cardhu import *
 
 class device_management():
     def get_at_port(self):

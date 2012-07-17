@@ -38,7 +38,7 @@ from global_var import *
 from device_management import *
 from tools import *
 import common
-from cardhu2 import *
+from cardhu import *
 
 cell_style = easyxf('alignment: horizontal right;')
 status_OK_style     = easyxf('alignment: horizontal center;'

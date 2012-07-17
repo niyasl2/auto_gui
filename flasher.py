@@ -6,7 +6,7 @@ import common
 from FindRegression import *
 #import chilkat
 from tools import *
-from cardhu2 import *
+from cardhu import *
 #import UnRAR2
 BAT_FILE = "flash.bat"
 ATDBG_BAT = "at_debug.bat"

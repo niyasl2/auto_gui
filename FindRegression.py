@@ -15,7 +15,7 @@ import ssh,os,re,subprocess,time
 from global_var import *
 import chart
 #from auto_gui2 import *
-import auto_gui2
+import auto_gui
 from tools import *
 
 class Regression:

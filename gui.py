@@ -7,7 +7,7 @@ import time
 # import win32net
 import wx
 import threading
-from auto_gui2 import *
+from auto_gui import *
 from KThread import *
 from wx.lib.scrolledpanel import ScrolledPanel
 import common
