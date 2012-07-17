@@ -131,7 +131,7 @@ class Regression:
         self.band_4test = band_4test
         self.scenario_4test = (scenario_4test)
 
-        iCT = auto_gui2.CallboxTest()
+        iCT = auto_gui.CallboxTest()
         
         i = Tools().find_index(BRANCH_ALLOWED,branch_4test)
 
