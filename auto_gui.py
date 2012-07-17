@@ -2114,7 +2114,7 @@ class CallboxTest():
                 try:
                     self.write_value_in_row_and_check(write_row, self.throughput_DL, cell_style, CHECK_LOW)
                 except:
-                    self.write_value_in_row_and_check(write_row, self.throughput_DL, cell_style, NO_CHECK)		
+                    self.write_value_in_row_and_check(write_row, self.throughput_DL, cell_style, NO_CHECK)
             except:
                 self.current_col = current + 2
 
@@ -2320,13 +2320,13 @@ class CallboxTest():
         # Notify AutoIt for starting build
         self.notify_autoit(file_build_command)
 
-    def Run_Branch_Test(self,flash=False,Reg=False,Forced=False,CL=0):
+    def Run_Branch_Test(self,flash=False,Reg=False,Forced=False,CL=0,Resume=False):
         global branch , EXCEL_FILE
         for branch in self.branch_4test :
             i = Tools().find_index(BRANCH_ALLOWED,branch)
             EXCEL_FILE = EXCEL_FLIST[i]
             self.config_init()
-            self.test_branch(branch,'unit',flash,Reg,Forced,CL)
+            self.test_branch(branch,'unit',flash,Reg,Forced,CL,Resume)
 
     def Init_Auto(self,branch4test,band4test,scenario4test):
         global  BAND_TANGO_ALLOWED , scenario_implemented
@@ -2338,7 +2338,7 @@ class CallboxTest():
         self.comport = common.PORT_COM_TANGO
         self.config_init()
 
-    def start(self):
+    def start(self,Res=False):
         global branch , EXCEL_FILE
         timer = time.time()
         SCHEDULED_BUILD_TIME = 3600*4
@@ -2353,7 +2353,7 @@ class CallboxTest():
                     i = Tools().find_index(BRANCH_ALLOWED,branch)
                     EXCEL_FILE = EXCEL_FLIST[i]
                     self.config_init()
-                    self.test_branch(branch)
+                    self.test_branch(branch,Resume=Res)
 
                 time_left = SCHEDULED_BUILD_TIME - ( time.time() - timer )
                 self.print_with_time("Next build in %s sec..." % time_left )
@@ -2362,10 +2362,10 @@ class CallboxTest():
             time.sleep(10)
 
 
-    def test_branch(self,branch,test='auto',flash=False,Reg=False,Forced=False,CL=0):
+    def test_branch(self,branch,test='auto',flash=False,Reg=False,Forced=False,CL=0,Resume=False):
         flashed = False
         if test == 'auto':
-            if not os.path.exists(branch):
+            if not os.path.exists(branch) or Resume == False:
                 (status,self.build_cl) = Tools()._build(branch)
                 if status == BUILD_FAILED :
                     return
@@ -2418,7 +2418,7 @@ class CallboxTest():
             Flash().flash_modem(self.build_cl,branch)
             if device_management().sys_status() == "OK" :
                 self.retrieve_changelist()
-            if self.cl != self.build_cl : 
+            if self.cl != self.build_cl :
                 Tools().sendMail(r"Modem Binary is not updated (2nd Attempt )after Flashing BUILD CL %s, FLASHED CL %s"%(str(self.build_cl),str(self.cl)))
                 sys.exit(1)
 

@@ -158,7 +158,7 @@ class MyForm(wx.Frame):
         self.changelist = wx.TextCtrl(self.pl,-1,size=(60,20), value=u"")
 
 
-        #self.build = wx.CheckBox(self.pl, -1 ,'Build')
+        self.resume = wx.CheckBox(self.pl, -1 ,'Resume')
         self.flash = wx.CheckBox(self.pl, -1 ,'Flash')
         #self.graph = wx.CheckBox(self.pl, -1 ,'Graph')
         self.force = wx.CheckBox(self.pl, -1 ,'Force')
@@ -177,11 +177,12 @@ class MyForm(wx.Frame):
         #bsAdditionOption.Add(self.stKo_cl,0, wx.ALL,10)
        # bsAdditionOption.Add(self.tKo_cl,0, wx.ALL,10)
 
-        #bsAdditionOption.Add(self.build,0, wx.ALL,10)
+
         bsAdditionOption.Add(self.flash,0, wx.ALL,10)
         #bsAdditionOption.Add(self.graph,0, wx.ALL,10)
         bsAdditionOption.Add(self.force,0, wx.ALL,10)
         bsAdditionOption.Add(self.cReg,0, wx.ALL,10)
+        bsAdditionOption.Add(self.resume,0, wx.ALL,10)
         #bsAdditionOption.Add(self.stNbComp,0, wx.ALL,10)
         #bsAdditionOption.Add(self.tcNbComp,0, wx.ALL,10)
         sbsAdditionOption.Add(bsAdditionOption, 0, wx.LEFT,10)
@@ -934,24 +935,24 @@ class MyForm(wx.Frame):
             self.platformchoice = 0;
         elif (self.rbWoA.GetValue()):
             self.platformchoice = 1
-            
+
     def Start_Test(self):
         iCT = CallboxTest()
         iCT.Init_Auto(self.branch_4test,self.band_4test,self.scenario_4test)
         if self.testchoice == 0:
             print "Call Auto scheduler"
-            iCT.start()
+            iCT.start(Resume=self.resume.IsChecked())
         elif self.testchoice == 1:
             if self.flash.IsChecked() == True and self.entry.GetLabel() != "":
                 print "Run Test with Flashing"
                 Untar().main(self.entry.GetLabel())
                 Flash().flash_modem(99999,'cr3')
                 iCT.Init_Auto(self.branch_4test,self.band_4test,self.scenario_4test)
-                iCT.Run_Branch_Test(Forced=self.force.IsChecked(),flash=False,Reg=self.cReg.IsChecked(),CL=self.cl)
+                iCT.Run_Branch_Test(Forced=self.force.IsChecked(),flash=False,Reg=self.cReg.IsChecked(),CL=self.cl,Resume=self.resume.IsChecked())
                 print "Run Test Finished"
             else:
                 print "Run Test without Flashing"
-                iCT.Run_Branch_Test(Forced=self.force.IsChecked(),flash=self.flash.IsChecked(),Reg=self.cReg.IsChecked(),CL=self.cl)
+                iCT.Run_Branch_Test(Forced=self.force.IsChecked(),flash=self.flash.IsChecked(),Reg=self.cReg.IsChecked(),CL=self.cl,Resume=self.resume.IsChecked())
                 print "Run Test Finished"
 
         elif self.testchoice == 2:
@@ -961,7 +962,6 @@ class MyForm(wx.Frame):
     def find_index(self,lst,item):
         for i in range(0,len(lst)):
             if(lst[i]==item):
-                #print "find index %d"%i
                 return i
         return 0
 
