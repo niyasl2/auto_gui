@@ -274,16 +274,6 @@ class Flash:
         else:
             return False
 
-##        print "Flash End checking ...."
-##        max_wait = 25
-##        while max_wait and not Cardh_ctrl().send_cmd('alive'):
-##            print Cardh_ctrl().send_cmd('alive')
-##            print "Checking Flash End ...",max_wait
-##            time.sleep(10)
-##            max_wait = max_wait - 1
-##        return
-
-
     def flash_modem(self,cl,branch):
         self.init()
         self.cl = cl
@@ -291,12 +281,7 @@ class Flash:
         if self.cl != 0 :
             if not os.path.exists(BINARY_LIB+str(self.cl)+".zlib.wrapped"):
                 Tools().build(branch,self.cl)
-                #Regression().build_cl(branch,self.cl)
-
-##        if common.CARDHU:
-##            #if not self.cardhu_flash(self.cl):
-##            self.cardhu_flash(self.cl)
-##            return
+                #Regression().build_cl(branch,self.cl)n
 
         self.batch_init()
         self.download()

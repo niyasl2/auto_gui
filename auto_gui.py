@@ -2326,7 +2326,7 @@ class CallboxTest():
             i = Tools().find_index(BRANCH_ALLOWED,branch)
             EXCEL_FILE = EXCEL_FLIST[i]
             self.config_init()
-            self.test_branch2(branch,'unit',flash,Reg,Forced,CL)
+            self.test_branch(branch,'unit',flash,Reg,Forced,CL)
 
     def Init_Auto(self,branch4test,band4test,scenario4test):
         global  BAND_TANGO_ALLOWED , scenario_implemented
@@ -2353,7 +2353,7 @@ class CallboxTest():
                     i = Tools().find_index(BRANCH_ALLOWED,branch)
                     EXCEL_FILE = EXCEL_FLIST[i]
                     self.config_init()
-                    self.test_branch2(branch)
+                    self.test_branch(branch)
 
                 time_left = SCHEDULED_BUILD_TIME - ( time.time() - timer )
                 self.print_with_time("Next build in %s sec..." % time_left )
@@ -2362,7 +2362,7 @@ class CallboxTest():
             time.sleep(10)
 
 
-    def test_branch2(self,branch,test='auto',flash=False,Reg=False,Forced=False,CL=0):
+    def test_branch(self,branch,test='auto',flash=False,Reg=False,Forced=False,CL=0):
         flashed = False
         if test == 'auto':
             if not os.path.exists(branch):
@@ -2413,7 +2413,14 @@ class CallboxTest():
             self.build_cl = self.cl
         if self.cl != self.build_cl :
             Tools().sendMail(r"Modem Binary is not updated after Flashing BUILD CL %s, FLASHED CL %s"%(str(self.build_cl),str(self.cl)))
-            sys.exit(1)
+            #Let's Try Again
+            self.power_cycle()
+            Flash().flash_modem(self.build_cl,branch)
+            if device_management().sys_status() == "OK" :
+                self.retrieve_changelist()
+            if self.cl != self.build_cl : 
+                Tools().sendMail(r"Modem Binary is not updated (2nd Attempt )after Flashing BUILD CL %s, FLASHED CL %s"%(str(self.build_cl),str(self.cl)))
+                sys.exit(1)
 
         self.set_lte_only()
         for self.band in BAND_TANGO_ALLOWED :

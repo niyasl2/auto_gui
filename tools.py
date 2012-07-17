@@ -39,8 +39,13 @@ class Tools:
         print "item",item
         print "No Item Found"
         return 0
+        
+    def distclean(self,branch,variant="tango-internal"):
+        i = self.find_index(BRANCH_ALLOWED,branch)
+        cmd = "cd %s ;p4 sync %s...@%s; qjob make distclean VARIANT=%s "%(build_dir[i],P4BRANCH[i],cl,variant)
+        result = self.ssh_client(cmd)
 
-    def build(self,branch,cl,variant="tango-internal"):
+    def build(self,branch,cl,reg=False,variant="tango-internal"):
 
         print "Building ",branch,cl,variant
         i = self.find_index(BRANCH_ALLOWED,branch)
@@ -61,11 +66,18 @@ class Tools:
 ##            return BUILD_OK
 
         if os.path.exists(MODEM_BINARY_LOC[i]+"modem-rsa-key0.zlib.wrapped"):
-            print "Build Build Successful"
+            print " Build Successful"
             shutil.copy2(MODEM_BINARY_LOC[i]+"modem-rsa-key0.zlib.wrapped",(BINARY_LIB+str(cl)+".zlib.wrapped"))
             return BUILD_OK
         else:
-            print MODEM_BINARY_LOC[i]+"modem-rsa-key0.zlib.wrapped"
+            if reg:
+                self.distclean(branch)
+                result = self.ssh_client(cmd) # build again
+                if os.path.exists(MODEM_BINARY_LOC[i]+"modem-rsa-key0.zlib.wrapped"):
+                    print " Build Successful After cleaning build dir"
+                    shutil.copy2(MODEM_BINARY_LOC[i]+"modem-rsa-key0.zlib.wrapped",(BINARY_LIB+str(cl)+".zlib.wrapped"))
+                    return BUILD_OK
+                    
             msg = r"BUILD FAILURE FOR CL %s BRANCH %s VARIANT %s\n"%(cl,branch,variant)
             self.sendMail(msg)
             file_name = "BUILD_FAILURE_BRANCH_%s_CL_%s"%(branch,str(cl))
@@ -86,6 +98,12 @@ class Tools:
     def ssh_client(self,cmd):
         #server = ssh.Connection(host='sxdbld02', username='gcflab', password='LG!)67wn')
         server = ssh.Connection(host='frsys1', username='nsait', password='M@ilhot123')
+        result = server.execute(cmd)
+        return result
+        
+   def ssh_clientGCF(self,cmd):
+        server = ssh.Connection(host='sxdbld02', username='gcflab', password='LG!)67wn')
+        #server = ssh.Connection(host='frsys1', username='nsait', password='M@ilhot123')
         result = server.execute(cmd)
         return result
 
@@ -159,6 +177,18 @@ class Tools:
 
         return BUILD_FAILED,0
 
+    def sendMailGCF(self,msg):
+        print "Msg to Send",msg
+        cmd = "echo \"%s\" > txt_msg ; cat txt_msg | ssh frlts mail -s \"Test_Issues1\" nsait@nvidia.com " %(msg)
+        self.ssh_clientGCF(cmd)
+        time.sleep(1)
+        cmd = "echo \"%s\" > txt_msg ; cat txt_msg | mail -s \"Test_Issues2\" nsait@nvidia.com " %(msg)
+        self.ssh_clientGCF(cmd)
+        time.sleep(1)
+        cmd = "echo \"%s\" > txt_msg ; mail -s \"Test_Issues3\" nsait@nvidia.com < txt_msg" %(msg)
+        self.ssh_clientGCF(cmd)
+        
+        
     def sendMail(self,msg):
         print "Msg to Send",msg
         cmd = "echo \"%s\" > txt_msg ; cat txt_msg | ssh frlts mail -s \"Test_Issues1\" nsait@nvidia.com " %(msg)
@@ -167,6 +197,7 @@ class Tools:
         self.ssh_client(cmd)
         cmd = "echo \"%s\" > txt_msg ; mail -s \"Test_Issues3\" nsait@nvidia.com < txt_msg" %(msg)
         self.ssh_client(cmd)
+        self.sendMailGCF(msg)
       
     def latest_cl(self,branch):
         i = self.find_index(BRANCH_ALLOWED,branch)
