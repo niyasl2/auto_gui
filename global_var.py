@@ -20,8 +20,8 @@ for branch in BRANCH_ALLOWED:
 
 for platform in PLATFORM_ALLOWED:
     for branch in BRANCH_ALLOWED:
-        EXCEL_FLIST.append('Results_%s_%s.xls'%(branch,platform))
-        #EXCEL_FLIST.append(r'\\serv2\eng\nsait\workspace\Results_%s.xls'%branch)
+        #EXCEL_FLIST.append('Results_%s_%s.xls'%(branch,platform))
+        EXCEL_FLIST.append(r'\\serv2\eng\nsait\workspace\Results_%s_%s.xls'%(branch,platform))
 
 P4BRANCH = []
 P4BRANCH.append("//software/main.br/")
