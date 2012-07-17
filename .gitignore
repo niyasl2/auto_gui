@@ -1,3 +1,12 @@
+#Callbox
+*.xls
+*.txt
+assert/*.*
+chart/*.*
+*.jpg
+regression/*.*
+*.pyc
+
 #################
 ## Eclipse
 #################
