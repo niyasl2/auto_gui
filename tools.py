@@ -42,7 +42,7 @@ class Tools:
         
     def distclean(self,branch,variant="tango-internal"):
         i = self.find_index(BRANCH_ALLOWED,branch)
-        cmd = "cd %s ;p4 sync %s...@%s; qjob make distclean VARIANT=%s "%(build_dir[i],P4BRANCH[i],cl,variant)
+        cmd = "cd %s ;qjob make distclean VARIANT=%s "%(build_dir[i],variant)
         result = self.ssh_client(cmd)
 
     def build(self,branch,cl,reg=False,variant="tango-internal"):

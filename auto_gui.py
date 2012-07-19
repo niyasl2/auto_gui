@@ -2419,16 +2419,16 @@ class CallboxTest():
         self.retrieve_changelist()
         if self.build_cl == 0:
             self.build_cl = self.cl
-        if self.cl != self.build_cl :
+        if str(self.cl) != str(self.build_cl) :
             Tools().sendMail(r"Modem Binary is not updated after Flashing BUILD CL %s, FLASHED CL %s"%(str(self.build_cl),str(self.cl)))
             #Let's Try Again
             self.power_cycle()
             Flash().flash_modem(self.build_cl,branch)
             if device_management().sys_status() == "OK" :
                 self.retrieve_changelist()
-            if self.cl != self.build_cl :
+            if str(self.cl) != str(self.build_cl) :
                 Tools().sendMail(r"Modem Binary is not updated (2nd Attempt )after Flashing BUILD CL %s, FLASHED CL %s"%(str(self.build_cl),str(self.cl)))
-                sys.exit(1)
+                #sys.exit(1)
 
         self.set_lte_only()
         for self.band in BAND_TANGO_ALLOWED :

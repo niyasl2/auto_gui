@@ -98,13 +98,14 @@ class Regression:
                         print "Ref_CL",ref_cl
                         print branch , b , scen , ref_cl , cl
                         if ref_cl != "ERROR" :
-                            ko_cl,ok_cl=self.find_regression(branch,b,scen,ref_cl,cl)
-                            print "[REG][CL%s][BRANCH:%s][BAND:%s][SCEN:%s] KO_CL %s , OK_CL %s"%(str(cl),branch,str(b),scen,str(ko_cl),str(ok_cl))
-                            Tools().sendMail(r"[REG][CL%s][BRANCH:%s][BAND:%s][SCEN:%s] KO_CL %s , OK_CL %s"%(str(cl),branch,str(b),scen,str(ko_cl),str(ok_cl)))
-                            file_name = "Reg_%s_%d_%s_KOCL%d_OKCL_%d.txt" % (branch,int(b),scen, int(ko_cl),int(ok_cl))
-                            FILE = open('regression\\'+file_name,'a')
-                            FILE.write(r"[REG][CL%s][BRANCH:%s][BAND:%s][SCEN:%s] KO_CL %s , OK_CL %s"%(str(cl),branch,str(b),scen,str(ko_cl),str(ok_cl)))
-                            FILE.close()
+                            stat,ko_cl,ok_cl=self.find_regression(branch,b,scen,ref_cl,cl)
+                            if stat:
+                                print "[REG][CL%s][BRANCH:%s][BAND:%s][SCEN:%s] KO_CL %s , OK_CL %s"%(str(cl),branch,str(b),scen,str(ko_cl),str(ok_cl))
+                                Tools().sendMail(r"[REG][CL%s][BRANCH:%s][BAND:%s][SCEN:%s] KO_CL %s , OK_CL %s"%(str(cl),branch,str(b),scen,str(ko_cl),str(ok_cl)))
+                                file_name = "Reg_%s_%d_%s_KOCL%d_OKCL_%d.txt" % (branch,int(b),scen, int(ko_cl),int(ok_cl))
+                                FILE = open('regression\\'+file_name,'a')
+                                FILE.write(r"[REG][CL%s][BRANCH:%s][BAND:%s][SCEN:%s] KO_CL %s , OK_CL %s"%(str(cl),branch,str(b),scen,str(ko_cl),str(ok_cl)))
+                                FILE.close()
                     else:
                         print "No need to find Regression , Regression already found"
                         
@@ -123,6 +124,13 @@ class Regression:
         scenario_4test = (Tools().string_array(scenario_4test))[0]
         band_4test = (Tools().string_array(band_4test))[0]
         
+        try:
+            if int(band_4test) == 17:
+                print "Band 17 Regression is deactivated "
+                return False,0,0
+        except:
+            pass
+            
         print branch_4test , band_4test, scenario_4test , ok_cl,ko_cl
         
         Tools().sendMail(r"Find Regression For Branch %s , Band %s , Scen %s , OK_CL %s , KO_CL %s"%(branch_4test,str(band_4test),scenario_4test,str(ok_cl),str(ko_cl)))
@@ -142,11 +150,11 @@ class Regression:
             if(len(cl_list)) == 2 :
                 print "Final OK ",cl_list[1]
                 print "Final KO",cl_list[0]
-                return cl_list[0],cl_list[1]
+                return True,cl_list[0],cl_list[1]
 
             if(len(cl_list)) == 0 :
                 print "End"
-                return
+                return False,0,0
 
             nxt_cl = self.next_test_cl(cl_list)
             print nxt_cl

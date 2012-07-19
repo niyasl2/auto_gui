@@ -4,7 +4,7 @@ from device_management import *
 from global_var import *
 import common
 from FindRegression import *
-#import chilkat
+import chilkat
 from tools import *
 from cardhu import *
 #import UnRAR2
@@ -74,22 +74,22 @@ class Untar:
             os.remove(path)
 
     def unrar(self,dst,file_name):
-        return
+        #return
         #os.chdir(dst)
         #UnRAR2.RarFile(file_name).extract()
         #return
-##        rar = chilkat.CkRar()
-##        success = rar.Open(file_name)
-##        if (success != True):
-##            print rar.lastErrorText()
-##            sys.exit(-1)
-##
-##        success = rar.Unrar(dst)
-##        if (success != True):
-##            print rar.lastErrorText()
-##        else:
-##            print "Success."
+        rar = chilkat.CkRar()
+        success = rar.Open(file_name)
+        if (success != True):
+           print rar.lastErrorText()
+           sys.exit(-1)
 
+        success = rar.Unrar(dst)
+        if (success != True):
+           print rar.lastErrorText()
+        else:
+           print "Success."
+        return
 
     def main(self,src):
         tmp = 'C:\\tmpgz\\'
