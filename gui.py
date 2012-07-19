@@ -241,14 +241,88 @@ class MyForm(wx.Frame):
         #self.stLogSection = wx.StaticText(self.pl,-1,'LogSection')
        # sbsLogSection.Add(self.stLogSection, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL,10)
         bsLogSection = wx.BoxSizer ( wx.HORIZONTAL )
-        self.log = wx.TextCtrl(self.pl, wx.ID_ANY, size=(1150,300),style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
+        self.log = wx.TextCtrl(self.pl, wx.ID_ANY, size=(600,300),style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
         self.log.SetBackgroundColour("#000000")
         self.log.SetForegroundColour('#ffffff')
-        bsLogSection.Add(self.log,1,wx.ALL,10)
-        #bsLogSection.Add(self.msg,1,wx.ALL,10)
+        bsLogSection.Add(self.log,1,wx.LEFT,10)
 
-        sbsLogSection.Add(bsLogSection, 0, wx.LEFT,10)
 
+        #Callbox Options
+        bsCallbox = wx.BoxSizer(wx.VERTICAL)
+        bsDirection = wx.BoxSizer(wx.HORIZONTAL)
+        bsTBRB = wx.BoxSizer(wx.HORIZONTAL)
+        bsMode = wx.BoxSizer(wx.HORIZONTAL)
+
+
+        self.rbCustom = wx.CheckBox(self.pl, -1 ,'Custom')
+        stdir = wx.StaticText(self.pl,-1,' (DL/UL/COMB)')
+        self.tcDirection =  wx.TextCtrl(self.pl,-1,size=(30,20), value=u"")
+        stdlsize = wx.StaticText(self.pl,-1,' DL Size(Mb)')
+        self.tcDownlik_size = wx.TextCtrl(self.pl,-1,size=(30,20), value=u"")
+        stulsize = wx.StaticText(self.pl,-1,' UL Size(Mb)')
+        self.tcUplink_size = wx.TextCtrl(self.pl,-1,size=(30,20), value=u"")
+        stdlrb = wx.StaticText(self.pl,-1,' DL RB')
+        self.tcdlrb = wx.TextCtrl(self.pl,-1,size=(30,20), value=u"")
+        stdltb = wx.StaticText(self.pl,-1,' DL TBS')
+        self.tcdltb = wx.TextCtrl(self.pl,-1,size=(30,20), value=u"")
+        stulrb = wx.StaticText(self.pl,-1,' UL RB')
+        self.tculrb = wx.TextCtrl(self.pl,-1,size=(30,20), value=u"")
+        stultb = wx.StaticText(self.pl,-1,' UL TBS')
+        self.tcultb = wx.TextCtrl(self.pl,-1,size=(30,20), value=u"")
+        strlc = wx.StaticText(self.pl,-1,' RLC(AM/UM)')
+        self.tcrlc = wx.TextCtrl(self.pl,-1,size=(30,20), value=u"")
+        stmode = wx.StaticText(self.pl,-1,' MODE(SISO=1/MIMO=3)')
+        self.tcmode = wx.TextCtrl(self.pl,-1,size=(30,20), value=u"")
+
+        bsDirection.Add(self.rbCustom,1,wx.LEFT,10)
+        bsDirection.Add(stdir,1,wx.LEFT,10)
+        bsDirection.Add(self.tcDirection,1,wx.LEFT,10)
+        bsDirection.Add(stdlsize,1,wx.LEFT,10)
+        bsDirection.Add(self.tcDownlik_size,1,wx.LEFT,10)
+        bsDirection.Add(stulsize,1,wx.LEFT,10)
+        bsDirection.Add(self.tcUplink_size,1,wx.LEFT,10)
+
+        bsTBRB.Add(stdlrb,1,wx.LEFT,10)
+        bsTBRB.Add(self.tcdlrb,1,wx.LEFT,10)
+        bsTBRB.Add(stdltb,1,wx.LEFT,10)
+        bsTBRB.Add(self.tcdltb,1,wx.LEFT,10)
+        bsTBRB.Add(stulrb,1,wx.LEFT,10)
+        bsTBRB.Add(self.tculrb,1,wx.LEFT,10)
+        bsTBRB.Add(stultb,1,wx.LEFT,10)
+        bsTBRB.Add(self.tcultb,1,wx.LEFT,10)
+
+        bsMode.Add(strlc,1,wx.LEFT,10)
+        bsMode.Add(self.tcrlc,1,wx.LEFT,10)
+        bsMode.Add(stmode,1,wx.LEFT,10)
+        bsMode.Add(self.tcmode,1,wx.LEFT,10)
+
+        bsCallbox.Add(bsDirection,1,wx.LEFT,10)
+        bsCallbox.Add(bsTBRB,1,wx.LEFT,10)
+        bsCallbox.Add(bsMode,1,wx.LEFT,10)
+
+        sbCallbox = wx.StaticBox(self.pl, -1, 'Callbox Config', size=(-1, -1))
+        sbsCallbox = wx.StaticBoxSizer(sbCallbox, wx.VERTICAL)
+        sbsCallbox.Add(bsCallbox, 0,wx.LEFT,10)
+
+        bsMsg = wx.BoxSizer ( wx.HORIZONTAL )
+        self.msg = wx.TextCtrl(self.pl, wx.ID_ANY, size=(550,150),style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
+        #self.msg.SetBackgroundColour("#000000")
+        #self.msg.SetForegroundColour('#ffffff')
+        bsMsg.Add(self.msg,1,wx.LEFT,10)
+        #self.asrt = wx.TextCtrl(self.pl, wx.ID_ANY, size=(550,150),style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
+        #self.msg.SetBackgroundColour("#000000")
+        #self.msg.SetForegroundColour('#ffffff')
+        #bsAssert = wx.BoxSizer ( wx.HORIZONTAL )
+        #bsAssert.Add(self.asrt,1,wx.LEFT,10)
+        bsAsset_Msg = wx.BoxSizer ( wx.VERTICAL )
+        bsAsset_Msg.Add(sbsCallbox, 0, wx.EXPAND)
+        bsAsset_Msg.Add(bsMsg, 0, wx.EXPAND)
+
+        bsLGMSG = wx.BoxSizer ( wx.HORIZONTAL)
+        bsLGMSG.Add(bsLogSection, 0, wx.EXPAND)
+        bsLGMSG.Add(bsAsset_Msg, 0, wx.EXPAND)
+        #sbsLogSection.Add(bsLogSection, 0, wx.LEFT,10)
+        sbsLogSection.Add(bsLGMSG, 0, wx.LEFT,10)
 
 
         #TEST TYPE BRANCH BAND JOINING
@@ -681,10 +755,19 @@ class MyForm(wx.Frame):
         self.scenario_4test = []
         if self.Alltest.IsChecked():
             self.scenario_4test = scenario_implemented
+
         else :
             for i in range(0,len(scenario_implemented)):
                 if self.scen[i].IsChecked() :
                     self.scenario_4test.append(scenario_implemented[i])
+
+        try:
+            if self.rbCustom.IsChecked():
+                self.scenario_4test.append("CUSTOM")
+        except:
+            pass
+
+        print self.scenario_4test
 
         try:
             self.cl = int(self.changelist.GetValue())
@@ -717,6 +800,34 @@ class MyForm(wx.Frame):
                 common.MODEM_PORT = common.CARDHU_MODEM_TCP
         except:
             common.CARDHU = False
+
+        try:
+            if self.rbCustom.IsChecked():
+                print "Setting default values for custom config"
+
+                if self.tcDirection.GetValue() == "":
+                    self.tcDirection.SetValue("DL")
+
+                if self.tcrlc.GetValue() == "":
+                    self.tcrlc.SetValue("AM")
+
+                if self.tcdlrb.GetValue() == "":
+                    self.tcdlrb.SetValue(str(RB_START))
+                if self.tcdltb.GetValue() == "":
+                    self.tcdltb.SetValue(str(TBSIDX_START))
+                if self.tculrb.GetValue() == "":
+                    self.tculrb.SetValue(str(10))
+                if self.tcultb.GetValue() == "":
+                    self.tcultb.SetValue(str(10))
+                if self.tcDownlik_size.GetValue() == "":
+                    self.tcDownlik_size.SetValue(str(1000))
+                #self.tcDownlik_size.SetValue(str(1000))
+                if self.tcUplink_size.GetValue() == "":
+                    self.tcUplink_size.SetValue(str(500))
+                if self.tcmode.GetValue() == "":
+                    self.tcmode.SetValue(str(1))
+        except:
+            raise
 
     def Refresh_Progress(self):
         self.sizer.Layout()
@@ -851,6 +962,7 @@ class MyForm(wx.Frame):
         while threading.activeCount()>1:
         #while self.t1.isAlive() or self.t4.isAlive():
             time.sleep(5)
+            self.Read_Status_Msg()
             Read = self.Read_Status()
             if Read == True :
                 self.stCL.SetLabel(self.cl_run)
@@ -939,6 +1051,9 @@ class MyForm(wx.Frame):
     def Start_Test(self):
         iCT = CallboxTest()
         iCT.Init_Auto(self.branch_4test,self.band_4test,self.scenario_4test)
+        if self.rbCustom.IsChecked():
+            iCT.custom_config(rlc=self.tcrlc.GetValue(),dl_rb=int(self.tcdlrb.GetValue()),dl_tb=int(self.tcdltb.GetValue()),ul_rb=int(self.tculrb.GetValue()),ul_tb=int(self.tcultb.GetValue()),dl_size=int(self.tcDownlik_size.GetValue()),ul_size=int(self.tcUplink_size.GetValue()),tm=int(self.tcmode.GetValue()),dir=self.tcDirection.GetValue())
+
         if self.testchoice == 0:
             print "Call Auto scheduler"
             iCT.start(Res=self.resume.IsChecked())
@@ -1025,6 +1140,9 @@ class MyForm(wx.Frame):
 
 
     def Regression_Start(self,event):
+        #self.Read_Status_Msg()
+        #return
+
         self.cleanProgress()
         self.ParseArgs()
         self.InitupdateProgress()
@@ -1032,6 +1150,80 @@ class MyForm(wx.Frame):
         self.t4.start()
         self.t2 = KThread(target=self.updateProgress)
         self.t2.start()
+
+
+    def Already_Written(self,cl,branch,band,scen,status):
+        try:
+            out = self.msg.GetValue()
+            Flag = False
+            result = out.split('\n')
+            #print "Result",result
+            #print "len",len(result)
+            for i in range(0,(len(result)-1)):
+                #print "i",i
+                #print "inside"
+                #print "Line",line
+                #print "result[i]",result[i]
+                grp = re.search('CL:([0-9]+) Branch:(\S+) Band:(\S+) SCENARIO:(\S+) STATUS:(\S+)',result[i])
+                #print "written",grp.group(1) #print grp.group(2), grp.group(3), grp.group(4) , grp.group(5)
+                #print "Next",str(cl),branch,band,scen,status
+                if grp.group(1) == str(cl) and grp.group(2) == branch and grp.group(3) == band and grp.group(4) == scen and grp.group(5) == status :
+                   #print "True"
+                   Flag =  True
+
+            return Flag
+        except:
+            return False
+            pass
+            #return False
+
+    def assert_info(self,cl,branch,band,scen,Status):
+        file = 'assert\\ASSERT_%s_CL%d.txt'%(scen,int(cl))
+        #print file
+        if os.path.exists(file):
+            FILE_OK = open(file,'r')
+            #print "Path exists"
+            NB_LINES = 0
+            #self.msg.WriteText('CL:%d\tBranch:%s\tBand:%s\tSCENARIO:%s\tSTATUS:%s\n'%(int(cl),branch,band,scen,Status))
+            for line in (FILE_OK.readlines()):#reversed
+                #print "line",line
+                try:
+                    if re.search('DXP0 Crash Report',line) or re.search('DXP1 Crash Report',line):
+                        self.msg.WriteText('\n')
+                        NB_LINES = 8
+                    if NB_LINES > 0:
+                        if line != "":
+                            NB_LINES -= 1
+                            self.msg.WriteText(line)
+                except:
+                    pass
+
+    def Read_Status_Msg(self):
+        try:
+            file = 'status.txt'
+            FILE_OK = open(file,'r')
+            for line in (FILE_OK.readlines()):#reversed
+                #print "line",line
+                try:
+                    Status = re.search(re.compile(r"Status:(\S+)(])"), line).group(1)
+                    if Status in [STATUS_REGRESSION,STATUS_ASSERT,STATUS_ERROR]:
+                        cl = re.search(re.compile(r"CL([0-9]+)"),line).group(1)
+                        branch = re.search(re.compile(r"Branch:(\S+)"),line).group(1)
+                        scen = re.search(re.compile(r"Test:(\S+)"), line).group(1)
+                        band = re.search(re.compile(r"Band:(\S+)"),line).group(1)
+                        #print "band"
+                        if not self.Already_Written(int(cl),branch,band,scen,Status):
+                            #print "write Text"
+                            self.msg.WriteText('CL:%d Branch:%s Band:%s SCENARIO:%s STATUS:%s\n'%(int(cl),branch,band,scen,Status))
+                            # if Status == STATUS_ASSERT:
+                                # self.assert_info(int(cl),branch,band,scen,Status)
+                except:
+                    pass
+
+
+            FILE_OK.close()
+        except:
+            pass
 
     def regression_thread(self):
         cl = int(self.changelist.GetValue())

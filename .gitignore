@@ -1,13 +1,14 @@
 #Callbox
 *.xls
-*.txt
 assert/*.*
 chart/*.*
 *.jpg
 regression/*.*
 *.pyc
+icera/*.*
+endBatch
+*.txt
 log_message.txt
-
 #################
 ## Eclipse
 #################

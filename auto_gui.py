@@ -27,7 +27,7 @@ Usage: callbox_auto.py
 #################################################################################################
 # Imports
 #################################################################################################
-import sys, visa, time, icera.datacard, os, os.path, threading, subprocess, re, locale,ssh,shutil
+import sys, visa, time, datacard, os, os.path, threading, subprocess, re, locale,ssh,shutil
 from ftplib import FTP
 from xlwt import Workbook, easyxf
 from xlrd import open_workbook, cellname
@@ -502,7 +502,7 @@ class CallboxTest():
         else:
             self.regression_delta = REGRESSION_DELTA_DOWNLINK
             print "ERROR: test not conformed"
-            assert(False)
+            #assert(False)
         # # Check Test Type
         # if re.search("_1_FILE"):
         #     self.num_files_in_ul = 1
@@ -724,6 +724,18 @@ class CallboxTest():
             self.ul_tbsidx = 16
             self.clock   = 1400
             self.find_max_dl_rate = 1
+        elif scen_name == "CUSTOM":
+            self.dl = self.dl_custom
+            self.ul = self.ul_custom
+            self.rlc_mode = self.rlc_mode_custom
+            self.dl_rb     = self.dl_rb_custom
+            self.dl_tbsidx = self.dl_tbsidx_custom
+            self.ul_rb     = self.ul_rb_custom
+            self.ul_tbsidx = self.ul_tbsidx_custom
+            self.num_files_in_ul = self.num_files_in_ul
+            self.dl_file_size = self.dl_file_size_custom
+            self.ul_file_size = self.ul_file_size_custom
+            self.tm = self.tm_custom
         else:
             print "\nThe scenario is not implemented yet"
             self.scen_name = ""
@@ -734,6 +746,26 @@ class CallboxTest():
     ########################################################
     ##               CALLBOX functions for start up
     ########################################################
+    def custom_config(self,rlc="AM",dl_rb=RB_START,dl_tb=TBSIDX_START,ul_rb=10,ul_tb=10,dl_size=1000,ul_size=500,tm=1,dir="DL"):
+        self.rlc_mode_custom = rlc
+        self.dl_rb_custom = dl_rb
+        self.dl_tbsidx_custom = dl_tb
+        self.ul_rb_custom = ul_rb
+        self.ul_tbsidx_custom = ul_tb
+        self.num_files_in_ul = 1
+        self.dl_file_size_custom = dl_size
+        self.ul_file_size_custom = ul_size
+        self.tm_custom = tm
+        self.dl_custom=0
+        self.ul_custom = 0
+        if dir == "DL":
+            self.dl_custom = 1
+        elif dir == "UL":
+            self.ul_custom = 1
+        else:
+            self.dl_custom = 1
+            self.ul_custom = 1
+
     def callbox_comm(self):
         print "\nGetting Callbox communication..."
         from visa import instrument
@@ -800,7 +832,7 @@ class CallboxTest():
         if common.CARDHU:
             self.callbox.write("ROUTe:LTE:SIGN:SCENario:SCELl RF2C,RX1,RF2C,TX1")
             return
-            
+
         self.callbox.write("ROUTe:LTE:SIGN:SCENario:SCELl RF1C,RX1,RF1C,TX1")
         # self.callbox.write("CONFigure:LTE:SIGN:RFSettings:EATTenuation:OUTPut 2") # NEEDED ?
         # self.callbox.write("CONFigure:LTE:SIGN:RFSettings:EATTenuation:INPut 2") # NEEDEED ?
@@ -810,7 +842,7 @@ class CallboxTest():
         if common.CARDHU:
             self.callbox.write("ROUTe:LTE:SIGN:SCENario:MIMO22 RF2C,RX1,RF2C,TX1,RF4C,TX2")
             return
-            
+
         self.callbox.write("ROUTe:LTE:SIGN:SCENario:MIMO22 RF1C,RX1,RF1C,TX1,RF3C,TX2")
 
     def config_band(self):
@@ -2371,6 +2403,7 @@ class CallboxTest():
 
 
     def test_branch(self,branch,test='auto',flash=False,Reg=False,Forced=False,CL=0,Resume=False):
+        print scenario_implemented
         flashed = False
         if test == 'auto':
             if not os.path.exists(branch) or Resume == False:
