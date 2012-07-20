@@ -41,34 +41,50 @@ class Regression:
                 return STATUS_OK
 
     def check_regression(self,ref,chk):
-        print self.band_4test,ref,1,self.scenario_4test,self.branch_4test
+        #print self.band_4test,ref,1,self.scenario_4test,self.branch_4test
         
         band_4test = Tools().string_array(self.band_4test)
         scenario_4test = Tools().string_array(self.scenario_4test)
         branch_4test = Tools().string_array(self.branch_4test)
         
-        dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul = chart.Chart().Get_CL_Values(band_4test[0],int(ref),scenario_4test[0],branch_4test[0])
-        print dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul
+        status = chart.Chart().get_scenario_status(branch_4test[0],band_4test[0],scenario_4test[0],int(chk))
+        if not status in [STATUS_OK,STATUS_REGRESSION,STATUS_ASSERT,STATUS_ERROR,STATUS_CRASH]:
+            Tools().sendMail('Get_scenario_Status issue , status returned %s'%str(status))
+            return STATUS_REGRESSION
+        
+        return status
+        
+        
+        #dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul = chart.Chart().Get_CL_Values(band_4test[0],int(ref),scenario_4test[0],branch_4test[0])
+        #print dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul
 
-        dxp0x,dxp1x,cpu_dlx,cpu_ulx,ftp_dlx,ftp_ulx = chart.Chart().Get_CL_Values(band_4test[0],int(chk),scenario_4test[0],branch_4test[0])
-        print dxp0x,dxp1x,cpu_dlx,cpu_ulx,ftp_dlx,ftp_ulx
+        #dxp0x,dxp1x,cpu_dlx,cpu_ulx,ftp_dlx,ftp_ulx = chart.Chart().Get_CL_Values(band_4test[0],int(chk),scenario_4test[0],branch_4test[0])
+        #print dxp0x,dxp1x,cpu_dlx,cpu_ulx,ftp_dlx,ftp_ulx
 
         # dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul = chart.Chart().Get_CL_Values(self.band_4test[0],int(ref),self.scenario_4test[0],self.branch_4test[0])
         # print dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul
 
         # dxp0x,dxp1x,cpu_dlx,cpu_ulx,ftp_dlx,ftp_ulx = chart.Chart().Get_CL_Values(self.band_4test[0],int(chk),self.scenario_4test[0],self.branch_4test[0])
         # print dxp0x,dxp1x,cpu_dlx,cpu_ulx,ftp_dlx,ftp_ulx
-
-        if  self.compare_values(cpu_dl,cpu_dlx) == STATUS_REGRESSION or \
-            self.compare_values(cpu_ul,cpu_ulx) == STATUS_REGRESSION or \
-            self.compare_values(ftp_dl,ftp_dlx) == STATUS_REGRESSION or \
-            self.compare_values(ftp_ul,ftp_ulx) == STATUS_REGRESSION or \
-            self.compare_values(dxp0,dxp0x,CHECK_HIGH) == STATUS_REGRESSION or \
-            self.compare_values(dxp1,dxp1x,CHECK_HIGH) == STATUS_REGRESSION :
-                return STATUS_REGRESSION
-
-        else:
-            return STATUS_OK
+        #try:
+        # status = chart.Chart().get_scenario_status(branch_4test[0],band_4test[0],scenario_4test[0],int(chk))
+        # if not status in [STATUS_OK,STATUS_REGRESSION,STATUS_ASSERT,STATUS_ERROR,STATUS_CRASH]:
+            # Tools().sendMail('Get_scenario_Status issue , status returned %s'%str(status))
+            # return STATUS_REGRESSION
+        
+        # return status
+                
+        # except:
+            # raise
+            # if  self.compare_values(cpu_dl,cpu_dlx) == STATUS_REGRESSION or \
+                # self.compare_values(cpu_ul,cpu_ulx) == STATUS_REGRESSION or \
+                # self.compare_values(ftp_dl,ftp_dlx) == STATUS_REGRESSION or \
+                # self.compare_values(ftp_ul,ftp_ulx) == STATUS_REGRESSION or \
+                # self.compare_values(dxp0,dxp0x,CHECK_HIGH) == STATUS_REGRESSION or \
+                # self.compare_values(dxp1,dxp1x,CHECK_HIGH) == STATUS_REGRESSION :
+                    # return STATUS_REGRESSION
+            # else:
+                # return STATUS_OK
 
     def string_array(self,element):
         #element = str(element)
@@ -249,6 +265,17 @@ class Regression:
         scen = scenario_implemented[0]
         ko_cl = 22
         ok_cl = 20
+        self.band_4test=4,
+        self.scenario_4test=scenario_implemented[0]
+        self.branch_4test = 'main'
+        band_4test = Tools().string_array(self.band_4test)
+        scenario_4test = Tools().string_array(self.scenario_4test)
+        branch_4test = Tools().string_array(self.branch_4test)
+        status = chart.Chart().get_scenario_status(branch_4test[0],band_4test[0],scenario_4test[0],int(475389))
+        print status
+        
+        return
+        
         Tools().sendMail(r"[REG][CL%s][BRANCH:%s][BAND:%s][SCEN:%s] KO_CL %s , OK_CL %s\n 2nd Line \n 3rd Line"%(str(cl),branch,str(b),scen,str(ko_cl),str(ok_cl)))
         #self._run('cr3','4',scenario_implemented[0],471068)
         return

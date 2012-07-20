@@ -304,11 +304,11 @@ class MyForm(wx.Frame):
         sbsCallbox = wx.StaticBoxSizer(sbCallbox, wx.VERTICAL)
         sbsCallbox.Add(bsCallbox, 0,wx.LEFT,10)
 
-        bsMsg = wx.BoxSizer ( wx.HORIZONTAL )
-        self.msg = wx.TextCtrl(self.pl, wx.ID_ANY, size=(550,150),style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
+        #bsMsg = wx.BoxSizer ( wx.HORIZONTAL )
+        self.msg = ""# = wx.TextCtrl(self.pl, wx.ID_ANY, size=(550,150),style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
         #self.msg.SetBackgroundColour("#000000")
         #self.msg.SetForegroundColour('#ffffff')
-        bsMsg.Add(self.msg,1,wx.LEFT,10)
+        #bsMsg.Add(self.msg,1,wx.LEFT,10)
         #self.asrt = wx.TextCtrl(self.pl, wx.ID_ANY, size=(550,150),style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
         #self.msg.SetBackgroundColour("#000000")
         #self.msg.SetForegroundColour('#ffffff')
@@ -316,7 +316,7 @@ class MyForm(wx.Frame):
         #bsAssert.Add(self.asrt,1,wx.LEFT,10)
         bsAsset_Msg = wx.BoxSizer ( wx.VERTICAL )
         bsAsset_Msg.Add(sbsCallbox, 0, wx.EXPAND)
-        bsAsset_Msg.Add(bsMsg, 0, wx.EXPAND)
+        #bsAsset_Msg.Add(bsMsg, 0, wx.EXPAND)
 
         bsLGMSG = wx.BoxSizer ( wx.HORIZONTAL)
         bsLGMSG.Add(bsLogSection, 0, wx.EXPAND)

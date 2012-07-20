@@ -997,11 +997,12 @@ class CallboxTest():
             return
         if tbsidx <= 10 :
             modulation = "QPSK"
-        elif tbsidx <= 19:
-            modulation = "Q16"
+        #elif tbsidx <= 19:
         else:
-            print "Error: the tbsidx (%s) in UL must be set up to 19" % tbsidx
-            return
+            modulation = "Q16"
+        #else:
+            #print "Error: the tbsidx (%s) in UL must be set up to 19" % tbsidx
+            #return
         # The transport block size index is selected automatically.
         config_udch_ul = "CONFigure:LTE:SIGN:CONNection:UDCHannels:UL %s,0,%s,%s" % (rb, modulation, tbsidx)
         self.callbox.write(config_udch_ul)
@@ -1067,6 +1068,7 @@ class CallboxTest():
         # time.sleep(3)
         self.at.send('at+cfun=1')
         self.at.send('at%ifullcoredump=1') # activate full coredump
+        self.set_lte_only() # Moved from test_branch for catching assert
         time.sleep(5)
 
     def active_pdpcontext(self):
@@ -1078,7 +1080,7 @@ class CallboxTest():
         self.at.send('at%inwmode=1,E4E17,1')
         self.at.send('at%inwmode=0,E,1,2,1')
         time.sleep(2)
-
+            
     def wait_attach(self):
 ##        if common.CARDHU :
 ##            return True
@@ -1736,7 +1738,15 @@ class CallboxTest():
             ### Init Sequence ###
             self.get_ue_port()
             # Start up the UE
-            self.ue_startup()
+            try:
+                self.ue_startup()
+            except:
+                print "Exception thrown while ue startup"
+                self.status = STATUS_ASSERT
+                self.download_coredump()
+                self.power_cycle()
+                return False
+                
             # Wait for attach
             if not self.wait_attach():
                 if self.check_assert_if_start_reg():
@@ -2463,7 +2473,7 @@ class CallboxTest():
                 Tools().sendMail(r"Modem Binary is not updated (2nd Attempt )after Flashing BUILD CL %s, FLASHED CL %s"%(str(self.build_cl),str(self.cl)))
                 #sys.exit(1)
 
-        self.set_lte_only()
+        #self.set_lte_only()
         for self.band in BAND_TANGO_ALLOWED :
             for scen in scenario_implemented:
                 self.run_scenario(scen,Forced)
