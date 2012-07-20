@@ -38,7 +38,7 @@ class MyForm(wx.Frame):
 
     #----------------------------------------------------------------------
     def __init__(self):
-        wx.Frame.__init__(self, None, wx.ID_ANY, "NVIDIA LTE Throughput Tester",size=(1250,800))
+        wx.Frame.__init__(self, None, wx.ID_ANY, "NVIDIA LTE Throughput Tester",size=(1350,800))
 
         self.panel = wx.Panel(self, wx.ID_ANY)
         self.pl = wx.Panel(self.panel)
@@ -199,6 +199,8 @@ class MyForm(wx.Frame):
         bResult = wx.Button(self.pl,-1,label="Result")
         bReg = wx.Button(self.pl,-1,label="REG")
         bSetting = wx.Button(self.pl,-1,label="Setting")
+        bExit = wx.Button(self.pl,-1,label="Exit")
+        self.Bind(wx.EVT_BUTTON,sys.exit,bExit)
         self.Bind(wx.EVT_BUTTON, self.onRun, bStart)
         bsStartSection.Add(bStart,0, wx.ALL,10)
         self.Bind(wx.EVT_BUTTON, self.stopThread, bStop)
@@ -209,6 +211,7 @@ class MyForm(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.Regression_Start, bReg)
         bsStartSection.Add(bReg,0, wx.ALL,10)
         bsStartSection.Add(bSetting,0, wx.ALL,10)
+        bsStartSection.Add(bExit,0, wx.ALL,10)
         sbsStartSection.Add(bsStartSection, 0, wx.LEFT,10)
 
 
@@ -241,7 +244,7 @@ class MyForm(wx.Frame):
         #self.stLogSection = wx.StaticText(self.pl,-1,'LogSection')
        # sbsLogSection.Add(self.stLogSection, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL,10)
         bsLogSection = wx.BoxSizer ( wx.HORIZONTAL )
-        self.log = wx.TextCtrl(self.pl, wx.ID_ANY, size=(600,300),style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
+        self.log = wx.TextCtrl(self.pl, wx.ID_ANY, size=(700,300),style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
         self.log.SetBackgroundColour("#000000")
         self.log.SetForegroundColour('#ffffff')
         bsLogSection.Add(self.log,1,wx.LEFT,10)
@@ -304,11 +307,11 @@ class MyForm(wx.Frame):
         sbsCallbox = wx.StaticBoxSizer(sbCallbox, wx.VERTICAL)
         sbsCallbox.Add(bsCallbox, 0,wx.LEFT,10)
 
-        #bsMsg = wx.BoxSizer ( wx.HORIZONTAL )
-        self.msg = ""# = wx.TextCtrl(self.pl, wx.ID_ANY, size=(550,150),style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
+        bsMsg = wx.BoxSizer ( wx.HORIZONTAL )
+        self.msg = wx.TextCtrl(self.pl, wx.ID_ANY, size=(550,200),style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
         #self.msg.SetBackgroundColour("#000000")
         #self.msg.SetForegroundColour('#ffffff')
-        #bsMsg.Add(self.msg,1,wx.LEFT,10)
+        bsMsg.Add(self.msg,1,wx.LEFT,10)
         #self.asrt = wx.TextCtrl(self.pl, wx.ID_ANY, size=(550,150),style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
         #self.msg.SetBackgroundColour("#000000")
         #self.msg.SetForegroundColour('#ffffff')
@@ -316,7 +319,7 @@ class MyForm(wx.Frame):
         #bsAssert.Add(self.asrt,1,wx.LEFT,10)
         bsAsset_Msg = wx.BoxSizer ( wx.VERTICAL )
         bsAsset_Msg.Add(sbsCallbox, 0, wx.EXPAND)
-        #bsAsset_Msg.Add(bsMsg, 0, wx.EXPAND)
+        bsAsset_Msg.Add(bsMsg, 0, wx.EXPAND)
 
         bsLGMSG = wx.BoxSizer ( wx.HORIZONTAL)
         bsLGMSG.Add(bsLogSection, 0, wx.EXPAND)
@@ -727,7 +730,8 @@ class MyForm(wx.Frame):
             self.Rsizer.Hide(self.gridSizer)
             self.Rsizer.Remove(self.gridSizer)
         except:
-            print "Already Empty"
+            pass
+            #print "Already Empty"
         self.gridSizer = []
         self.Refresh_Frame()
 
@@ -767,7 +771,7 @@ class MyForm(wx.Frame):
         except:
             pass
 
-        print self.scenario_4test
+        #print self.scenario_4test
 
         try:
             self.cl = int(self.changelist.GetValue())
@@ -827,7 +831,7 @@ class MyForm(wx.Frame):
                 if self.tcmode.GetValue() == "":
                     self.tcmode.SetValue(str(1))
         except:
-            raise
+            pass
 
     def Refresh_Progress(self):
         self.sizer.Layout()
@@ -962,7 +966,8 @@ class MyForm(wx.Frame):
         while threading.activeCount()>1:
         #while self.t1.isAlive() or self.t4.isAlive():
             time.sleep(5)
-            #self.Read_Status_Msg()
+            self.Read_Status_Msg()
+            time.sleep(5)
             Read = self.Read_Status()
             if Read == True :
                 self.stCL.SetLabel(self.cl_run)
@@ -1215,8 +1220,8 @@ class MyForm(wx.Frame):
                         if not self.Already_Written(int(cl),branch,band,scen,Status):
                             #print "write Text"
                             self.msg.WriteText('CL:%d Branch:%s Band:%s SCENARIO:%s STATUS:%s\n'%(int(cl),branch,band,scen,Status))
-                            # if Status == STATUS_ASSERT:
-                                # self.assert_info(int(cl),branch,band,scen,Status)
+                            if Status == STATUS_ASSERT:
+                                self.assert_info(int(cl),branch,band,scen,Status)
                 except:
                     pass
 
