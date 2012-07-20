@@ -34,14 +34,17 @@ class Chart:
         print self.good_cl('cr3',4,scenario_implemented[len(scenario_implemented)-1],466921)
 
     def chart_scenario(self,band,cl,no=5,scen=scenario_implemented,branch='main'):
-        i = Tools().find_index(BRANCH_ALLOWED,branch)
-        self.excel = EXCEL_FLIST[i] 
-        (found,cl_list,dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul)=self.get_value(band,cl,no,scenario_implemented)
-        if found != True :
-            return
+        try:
+            i = Tools().find_index(BRANCH_ALLOWED,branch)
+            self.excel = EXCEL_FLIST[i] 
+            (found,cl_list,dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul)=self.get_value(band,cl,no,scenario_implemented)
+            if found != True :
+                return
 
-        self.draw_scenario(dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul,cl_list,band,100,scen,branch)
-
+            self.draw_scenario(dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul,cl_list,band,100,scen,branch)
+        except:
+            Tools().sendMail("Exception Thrown inside Chart Scenario")
+            
     def Get_CL_Values(self,band,cl,scen=scenario_implemented,branch='main'):
  
         i = Tools().find_index(BRANCH_ALLOWED,branch)

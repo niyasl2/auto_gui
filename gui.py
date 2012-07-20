@@ -962,7 +962,7 @@ class MyForm(wx.Frame):
         while threading.activeCount()>1:
         #while self.t1.isAlive() or self.t4.isAlive():
             time.sleep(5)
-            self.Read_Status_Msg()
+            #self.Read_Status_Msg()
             Read = self.Read_Status()
             if Read == True :
                 self.stCL.SetLabel(self.cl_run)

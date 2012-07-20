@@ -7,7 +7,7 @@ from win32api import GetFileVersionInfo
 import os, sys, string, time, threading, traceback, struct, ctypes, re
 import unittest
 
-#from util import *
+from util import *
 
 FC_NO = 0
 FC_XO = 1

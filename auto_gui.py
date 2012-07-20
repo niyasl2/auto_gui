@@ -760,8 +760,10 @@ class CallboxTest():
         self.ul_custom = 0
         if dir == "DL":
             self.dl_custom = 1
+            self.ul_file_size_custom = 0
         elif dir == "UL":
             self.ul_custom = 1
+            self.dl_file_size_custom = 0
         else:
             self.dl_custom = 1
             self.ul_custom = 1
@@ -1140,7 +1142,7 @@ class CallboxTest():
         if common.CARDHU:
             self.at = Cardhu()
         else:
-            self.at = icera.datacard.SerialPort(self.comport)
+            self.at = datacard.SerialPort(self.comport)
         attemptIdx = 0
         success = False
         power_used = False
