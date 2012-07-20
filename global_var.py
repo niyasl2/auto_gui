@@ -89,7 +89,7 @@ branch = "main"
 
 REGRESSION_DELTA_DOWNLINK = 0.1  # 10% of acceptable variation for test comparison in DL
 REGRESSION_DELTA_UPLINK = 0.15  # 15% of acceptable variation for test comparison in UL and combDLUL
-REGRESSION_DELTA_DXP = 0.07 #
+REGRESSION_DELTA_DXP = 0.1#0.07 #
 NB_PRECISION = 2
 
 
