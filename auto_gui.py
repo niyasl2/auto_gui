@@ -3051,6 +3051,10 @@ class CallboxTest():
             os.remove(file_temp)
         # Parse the arguments
         self.config_init() #NSAIT
+        self.get_ue_port()
+        self.retrieve_changelist()
+        self.ue_startup()
+        return
         self.parseArgs(argv)
 
 #################################################################################################

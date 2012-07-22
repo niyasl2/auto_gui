@@ -1185,7 +1185,7 @@ class MyForm(wx.Frame):
     def assert_info(self,cl,branch,band,scen,Status):
         file = 'assert\\ASSERT_%s_CL%d.txt'%(scen,int(cl))
         #print file
-        if os.path.exists(file):
+        if os.path.exists(file):    
             FILE_OK = open(file,'r')
             #print "Path exists"
             NB_LINES = 0
@@ -1202,6 +1202,12 @@ class MyForm(wx.Frame):
                             self.msg.WriteText(line)
                 except:
                     pass
+            FILE_OK.close()
+            try:
+                shutil.copy2(file,'assert\\ASSERT_%s_CL%d_x.txt'%(scen,int(cl)))
+                os.remove(file)
+            except:
+                pass
 
     def Read_Status_Msg(self):
         try:

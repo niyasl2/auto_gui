@@ -281,7 +281,11 @@ class Flash:
         self.branch = branch
         if self.cl != 0 :
             if not os.path.exists(BINARY_LIB+str(self.cl)+".zlib.wrapped"):
-                Tools().build(branch,self.cl)
+                status = Tools().build(branch,self.cl)
+                if status != BUILD_OK:
+                    print "Build Failure "
+                    return
+                    
                 #Regression().build_cl(branch,self.cl)n
 
         self.batch_init()
