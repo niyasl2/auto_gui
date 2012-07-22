@@ -1142,7 +1142,7 @@ class CallboxTest():
         if common.CARDHU:
             self.at = Cardhu()
         else:
-            self.at = datacard.SerialPort(self.comport)
+            self.at = icera.datacard.SerialPort(self.comport)
         attemptIdx = 0
         success = False
         power_used = False
