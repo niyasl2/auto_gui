@@ -27,7 +27,7 @@ Usage: callbox_auto.py
 #################################################################################################
 # Imports
 #################################################################################################
-import sys, visa, time, datacard, os, os.path, threading, subprocess, re, locale,ssh,shutil
+import sys, visa, time, icera.datacard, os, os.path, threading, subprocess, re, locale,ssh,shutil
 from ftplib import FTP
 from xlwt import Workbook, easyxf
 from xlrd import open_workbook, cellname
@@ -2415,7 +2415,7 @@ class CallboxTest():
 
 
     def test_branch(self,branch,test='auto',flash=False,Reg=False,Forced=False,CL=0,Resume=False):
-        print scenario_implemented
+        #print scenario_implemented
         flashed = False
         if test == 'auto':
             if not os.path.exists(branch) or Resume == False:
@@ -2487,8 +2487,8 @@ class CallboxTest():
         #os.system("copy "+ EXCEL_FILE + "\\\\" +RESULT_LOC+EXCEL_FILE)
 
         try:
-            print "EXCEL Copy Not active"
-            #shutil.copy2(EXCEL_FILE,RESULT_LOC+EXCEL_FILE)
+            #print "EXCEL Copy Not active"
+            shutil.copy2(EXCEL_FILE,RESULT_LOC+EXCEL_FILE)
         except:
             pass
 
