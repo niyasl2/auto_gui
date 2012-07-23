@@ -1818,12 +1818,12 @@ class CallboxTest():
                 print result[i]  
                 match = re.search(re.compile(r'dxp0 heap size \(Bytes\)   : (\S+)'),result[i])
                 if match:  
-                    dxp0_heap = match.group(1)
+                    self.dxp0_heap = match.group(1)
                 match = re.search(re.compile(r'dxp1 heap size \(Bytes\)   : (\S+)'),result[i])
                 if match:
-                    dxp1_heap = match.group(1)
-            self.heap_info = r"dxp0=%s,dxp1=%s"%(str(dxp0_heap),str(dxp1_heap))
-            print "Heap Memory",self.heap_info
+                    self.dxp1_heap = match.group(1)
+            #self.heap_info = r"dxp0=%s,dxp1=%s"%(str(dxp0_heap),str(dxp1_heap))
+            #print "Heap Memory",self.heap_info
         except:
             print "Error in retrieving heap memory information"
             pass
@@ -2205,7 +2205,9 @@ class CallboxTest():
         # 5) - Add CL and update general status...
         write_row.write(COL_CL, self.cl, changelist_style)
         write_row.write(COL_CL+2,branch,changelist_style)
-        write_row.write(COL_HEAPINFO,self.heap_info,changelist_style)
+        write_row.write(COL_HEAPINFO,self.dxp0_heap,cell_style)
+        write_row.write(COL_HEAPINFO+1,self.dxp1_heap,cell_style)
+        
         #write_row.wrtie(COL_CL+3,self.remark,changelist_style) #NSAIT DEBUG
         if self.status == STATUS_ASSERT:
             write_row.write(self.status_col-1, self.status, status_ASSERT_style)
