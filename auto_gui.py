@@ -785,7 +785,7 @@ class CallboxTest():
         # Reset the CALLBOX
         # self.callbox.write("*RST;*OPC?")    # RV - OPC (Operation Complete) return "1" as soon as all precedings commands have been executed
         time.sleep(1)
-        self.callbox.write("*CLS;*OPC?")    # RV - (need send and read)
+        self.callbox.write("*CLS;*OPC?")    # RV - (need  and read)
         # Allow to observe the screen in remote control (the front panel are still disabled).
         self.callbox.write("SYSTem:DISPlay:UPDate ON")
 
@@ -1809,6 +1809,21 @@ class CallboxTest():
         print "Current CL flashed on board", self.cl
         # Clean Assert report
         self.clean_assert_report()
+        
+    def heapinfo(self):
+        try:
+            memory_info = self.get_full_reply('at%idbgtest')
+            print memory_info
+            match = re.search(r'dxp0 heap size (Bytes)   :([0-9]+)',memory_info)
+            dxp0_heap = match.group(1)
+            print dxp0_heap
+            match = re.search(r'dxp1 heap size (Bytes)   :([0-9]+)',memory_info)
+            dxp1_heap = match.group(1)
+            self.heap_info = r"%s,%s"%(str(dxp0_heap),str(dxp1_heap))
+            print self.heap_info
+        except:
+            print "Error in retrieving heap memory information"
+            raise
 
     def init_var(self):
         # Remove potential existant global variables for good excel sheet results
@@ -2187,6 +2202,7 @@ class CallboxTest():
         # 5) - Add CL and update general status...
         write_row.write(COL_CL, self.cl, changelist_style)
         write_row.write(COL_CL+2,branch,changelist_style)
+        write_row.write(COL_HEAPINFO,self.heap_info,changelist_style)
         #write_row.wrtie(COL_CL+3,self.remark,changelist_style) #NSAIT DEBUG
         if self.status == STATUS_ASSERT:
             write_row.write(self.status_col-1, self.status, status_ASSERT_style)
@@ -2476,6 +2492,7 @@ class CallboxTest():
                 #sys.exit(1)
 
         #self.set_lte_only()
+        self.heapinfo()
         for self.band in BAND_TANGO_ALLOWED :
             for scen in scenario_implemented:
                 self.run_scenario(scen,Forced)
