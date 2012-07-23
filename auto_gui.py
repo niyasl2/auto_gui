@@ -1813,17 +1813,20 @@ class CallboxTest():
     def heapinfo(self):
         try:
             memory_info = self.get_full_reply('at%idbgtest')
-            print memory_info
-            match = re.search(r'dxp0 heap size (Bytes)   :([0-9]+)',memory_info)
-            dxp0_heap = match.group(1)
-            print dxp0_heap
-            match = re.search(r'dxp1 heap size (Bytes)   :([0-9]+)',memory_info)
-            dxp1_heap = match.group(1)
-            self.heap_info = r"%s,%s"%(str(dxp0_heap),str(dxp1_heap))
-            print self.heap_info
+            result = memory_info.split('\n')
+            for i in range(0,(len(result)-1)):
+                print result[i]  
+                match = re.search(re.compile(r'dxp0 heap size \(Bytes\)   : (\S+)'),result[i])
+                if match:  
+                    dxp0_heap = match.group(1)
+                match = re.search(re.compile(r'dxp1 heap size \(Bytes\)   : (\S+)'),result[i])
+                if match:
+                    dxp1_heap = match.group(1)
+            self.heap_info = r"dxp0=%s,dxp1=%s"%(str(dxp0_heap),str(dxp1_heap))
+            print "Heap Memory",self.heap_info
         except:
             print "Error in retrieving heap memory information"
-            raise
+            pass
 
     def init_var(self):
         # Remove potential existant global variables for good excel sheet results
@@ -2223,7 +2226,7 @@ class CallboxTest():
             if not overall_status in (STATUS_ASSERT, STATUS_REGRESSION, STATUS_ERROR):
                 write_row.write(COL_OVERALL_STATUS, self.status, status_OK_style)
         write_row.write(COL_TIME, time.strftime("%d %b %Y %H:%M:%S", time.gmtime()), time_style)
-        write_row.write(COL_CL+3,self.remark)
+        #write_row.write(COL_CL+3,self.remark)
 
         #########################################################
         # 6) - Once everything is done ->Save excel file...
@@ -2460,7 +2463,7 @@ class CallboxTest():
             self.log_msg("Not Recoverable Error Detected")
             Tools().sendMail("No AT / Modem Port Available")
             sys.exit(-1)
-
+        
         if flashed:
             if device_management().sys_status() == "ERROR" :
                 print "Not Recoverable Error Detected"
@@ -3062,15 +3065,12 @@ class CallboxTest():
     ########################################################
     def main(self,argv=sys.argv[1:]):
         # Set by default the serial Port
-        self.comport = common.PORT_COM_TANGO
-        # Remove
-        if os.path.exists(file_temp):
-            os.remove(file_temp)
         # Parse the arguments
         self.config_init() #NSAIT
         self.get_ue_port()
         self.retrieve_changelist()
-        self.ue_startup()
+        self.heapinfo()
+        #self.ue_startup()
         return
         self.parseArgs(argv)
 
