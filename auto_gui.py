@@ -1801,15 +1801,21 @@ class CallboxTest():
 
     def retrieve_changelist(self):
         print "\nRetrieving changelist..."
-        # self.power_cycle()   # Added when first Run after PC reboot
-        # Getting the UE com port
-        self.get_ue_port()
-        # Get CL number
-        self.get_cl()
-        print "Current CL flashed on board", self.cl
-        # Clean Assert report
-        self.clean_assert_report()
-        
+        try:
+            # self.power_cycle()   # Added when first Run after PC reboot
+            # Getting the UE com port
+            self.get_ue_port()
+            # Get CL number
+            self.get_cl()
+            print "Current CL flashed on board", self.cl
+            # Clean Assert report
+            self.clean_assert_report()
+        except:
+            self.power_cycle()
+            self.get_ue_port()
+            self.get_cl()
+            self.clean_assert_report()
+            
     def heapinfo(self):
         try:
             memory_info = self.get_full_reply('at%idbgtest')
