@@ -44,10 +44,14 @@ class Untar:
 
     def untar(self,dst,file_name):
         os.chdir(dst)
-        tar = tarfile.open(file_name,'r:gz')#sys.argv[1] + '.tar.gz', 'r:gz')
-        for item in tar:
-            tar.extract(item)
-            #print 'Done.'
+        #tar = tarfile.open(file_name,'r:gz')#sys.argv[1] + '.tar.gz', 'r:gz')
+        #tar = tarfile.open(file_name,'.tar.gz')#sys.argv[1] + '.tar.gz', 'r:gz')
+        #print '7za x %s -o%s'%(file_name,dst)
+        os.system('7za x %s.tar.gz -o%s'%(file_name,dst))
+        os.system('7za x %s.tar -o%s'%(file_name,dst))
+        # for item in tar:
+            # tar.extract(item)
+            # #print 'Done.'
 
     def file_search(self,rootdir,file_name):
         fileList = []
@@ -93,7 +97,7 @@ class Untar:
 
     def main(self,src):
         tmp = 'C:\\tmpgz\\'
-        tmp_gz =tmp+ 'xyz.gz'
+        tmp_gz =tmp+ 'xyz.tar.gz'
         tmp_rar = tmp+ 'xyz.rar'
         name = "99999.zlib.wrapped"
         current_dir = os.getcwd()
@@ -102,7 +106,6 @@ class Untar:
         except:
             shutil.rmtree(tmp, onerror=self.remove_readonly)
             os.mkdir(tmp)
-
 
         src = raw(src)
         if re.search(".wrapped",src):
@@ -116,8 +119,8 @@ class Untar:
         elif re.search(".gz",src):
             print "GZ Found"
             shutil.copy2(src,tmp_gz)
-            self.untar(tmp,tmp_gz)
-
+            self.untar(tmp,tmp+'xyz')
+            
         modem_file = self.file_search(tmp,'modem-rsa')
         if not re.search("modem",modem_file):
             modem_file = self.file_search(tmp,'modem')
