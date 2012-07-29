@@ -59,7 +59,7 @@ ATTACH_STATUS  = "ATT"
 # Connection params
 #PORT_COM_TANGO     = "COM5"#34"#5
 PORT_COM_E410      = "COM22"
-FTP_ADDRESS        = '10.21.158.87'   # RV - Not a fixed address (change after each reboot) -> Need to fix that
+FTP_ADDRESS        = '192.168.48.178'#'10.21.158.87'   # RV - Not a fixed address (change after each reboot) -> Need to fix that
 FTP_SERVER_ADDRESS = '172.22.1.201'
 FTP_SERVER_USER    = 'anonymous'
 directory_downlink = "ftp_downlink"
@@ -89,7 +89,7 @@ branch = "main"
 
 REGRESSION_DELTA_DOWNLINK = 0.1  # 10% of acceptable variation for test comparison in DL
 REGRESSION_DELTA_UPLINK = 0.15  # 15% of acceptable variation for test comparison in UL and combDLUL
-REGRESSION_DELTA_DXP = 0.15#0.07 #
+REGRESSION_DELTA_DXP = 0.3#0.07 #
 NB_PRECISION = 2
 
 

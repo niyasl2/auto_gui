@@ -773,7 +773,6 @@ class CallboxTest():
         from visa import instrument
         try:
             command = "TCPIP0::" + FTP_ADDRESS + "::inst0::INSTR"
-            # print "command=", command
             self.callbox = instrument(command)        # RV - SHOULD GET A FIXED DOMAIN
         except:
             Tools().sendMail(r"TCPIP error - Check instruments")
@@ -1120,10 +1119,13 @@ class CallboxTest():
         # for line in p.stderr: ### RV - NOT WORKING ANYMORE ?????? -> DUE TO VPN and new network
             # print "Error:", line
         for list in p.stdout:
-            list_icera = re.search("Icera", list)
+            list_icera = re.search("NVIDIA", list)
             if list_icera != None:
                 l_split = list.split()
-                print "The Icera interface is", l_split[0]
+                match = re.search(re.compile('([0-9]+)(\S+)'),l_split[0])
+                if match:
+                    l_split[0] = match.group(1)
+                print "The NVIDIA interface is", l_split[0]
                 break
         sys.stdout.flush()
         # Check that the interface is found
@@ -1251,7 +1253,7 @@ class CallboxTest():
             return False
         match=re.search('Boot Counter:.*(\d+)', self.assert_report)
         if match:
-            self.download_coredump(forced=True)
+            #self.download_coredump(forced=True)
             # print self.assert_report
             number_assert = match.group(1)
             if number_assert > 1:
@@ -1736,6 +1738,7 @@ class CallboxTest():
                 # self.check_cell_mimo_siso()   ### RV - NOT WORKING YET
             except:
                 Tools().sendMail(r"Callbox Communication problem , Callbox Reset Required")
+                raise
                 sys.exit(1)
             ### Init Sequence ###
             self.get_ue_port()
@@ -1760,8 +1763,15 @@ class CallboxTest():
                 self.power_cycle()
                 continue
             # Active the PDP context
-            self.active_pdpcontext()
-
+            try:
+                self.active_pdpcontext()
+            except:
+                print "Exception thrown while ue startup"
+                self.status = STATUS_ASSERT
+                self.download_coredump()
+                self.power_cycle()
+                return False
+                
             if common.CARDHU :
                 self.status = STATUS_OK
                 self.error = NO_ERROR
@@ -3075,6 +3085,12 @@ class CallboxTest():
         # Set by default the serial Port
         # Parse the arguments
         self.config_init() #NSAIT
+        self.callbox_comm()
+        self.cell_siso()
+        self.cell_mimo()
+        self.callbox.write("CONFigure:LTE:SIGN:BAND OB4")
+        self.callbox.write("CONFigure:LTE:SIGN:RFSettings:CHANnel:DL 2175 ;UL?")
+        return
         self.get_ue_port()
         self.retrieve_changelist()
         self.heapinfo()

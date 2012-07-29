@@ -1227,7 +1227,8 @@ class MyForm(wx.Frame):
                             #print "write Text"
                             self.msg.WriteText('CL:%d Branch:%s Band:%s SCENARIO:%s STATUS:%s\n'%(int(cl),branch,band,scen,Status))
                             if Status == STATUS_ASSERT:
-                                self.assert_info(int(cl),branch,band,scen,Status)
+                                pass
+                                #self.assert_info(int(cl),branch,band,scen,Status)
                 except:
                     pass
 
