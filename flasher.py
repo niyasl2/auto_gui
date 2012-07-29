@@ -208,28 +208,21 @@ class Flash:
         idev = device_management()
         #if(int(idev.get_download_port())!=0):
         self.port = common.MODEM_PORT
-
-        #download.append("pushd \\\\%s\software\main.br\\tools"%wwin)
-        download.append(r"pushd \\%s\software\main.br\tools"%wwin)
-        #if self.branch == "main" :
-        #download.append("pushd \\\serv2.icerasemi.com\home\gcflab\workspace\callbox-test\software\main.br\\tools")
-        #else:
-        #download.append("pushd \\\serv2.icerasemi.com\home\gcflab\workspace\callbox-test_cr3\software\\releases\core\cr3.br\\tools")
-
+        #download.append(r"pushd \\%s\software\main.br\tools"%wwin)
         if self.cl == 0 :
-            download.append(("download_all.exe -v 3 -d %s --mass_storage=None --factory_tests=None --secondary_boot=None --loader=None --iso=None --customConfig=None --deviceConfig=None --productConfig=None --modem=modem-rsa-key0.zlib.wrapped ..\product\datacard\modem\\build\dxp-tango-internal-obj\EV4"%self.port))
+            download.append((r"%s\download_all.exe -v 3 -d %s --mass_storage=None --factory_tests=None --secondary_boot=None --loader=None --iso=None --customConfig=None --deviceConfig=None --productConfig=None --modem=modem-rsa-key0.zlib.wrapped ..\product\datacard\modem\\build\dxp-tango-internal-obj\EV4"%(DOWNLOAD_DIR,self.port)))
         else:
             #download.append( ("download_all.exe -v 3 -d %s --mass_storage=None --factory_tests=None --secondary_boot=None --loader=None --iso=None --customConfig=None --deviceConfig=None --productConfig=None --modem=%d.zlib.wrapped ..\product\datacard\modem\\build\dxp-tango-internal-obj\EV4\old_binary"% (self.port,int(self.cl))) )
             # download.append( ("download_all.exe -v 3 -d %s --mass_storage=None --factory_tests=None --secondary_boot=None --loader=None --iso=None --customConfig=None --deviceConfig=None --productConfig=None --modem=%d.zlib.wrapped \\\serv2.icerasemi.com\home\gcflab\workspace\\binary_lib "% (self.port,int(self.cl))) )
-            download.append( ("download_all.exe -v 3 -d %s --mass_storage=None --factory_tests=None --secondary_boot=None --loader=None --iso=None --customConfig=None --deviceConfig=None --productConfig=None --modem=%d.zlib.wrapped %s "% (self.port,int(self.cl),BINARY_LIB)) )
+            download.append((r"%s\download_all.exe -v 3 -d %s --mass_storage=None --factory_tests=None --secondary_boot=None --loader=None --iso=None --customConfig=None --deviceConfig=None --productConfig=None --modem=%d.zlib.wrapped %s "% (DOWNLOAD_DIR,self.port,int(self.cl),BINARY_LIB)))
 
-        download.append("popd")
+        #download.append("popd")
         download.append("echo download > endBatch")
 
         if os.path.exists(BAT_FILE) :
             os.remove(BAT_FILE)
 
-        for i in range(0,3) :
+        for i in range(0,1) :
             cmd = "echo "+download[i]+" >> " + BAT_FILE
             p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             print cmd
@@ -259,12 +252,12 @@ class Flash:
     def _flash(self):
         self.init()
         #self.parseArgs(sys.argv[1:])
-        self.cl = 1
+        self.cl = 99999
         #self.batch_init()
         #self.download()
-        common.CARDHU = True
-        print Cardh_ctrl().send_cmd('alive')
-        Flash().flash_modem(473984,'main')
+        #common.CARDHU = True
+        #print Cardh_ctrl().send_cmd('alive')
+        Flash().flash_modem(99999,'main')
         return
 
     def cardhu_flash(self,cl):

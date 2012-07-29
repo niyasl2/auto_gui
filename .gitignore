@@ -1,4 +1,5 @@
 #Callbox
+download_all/*
 *.xls
 assert/*.*
 chart/*.*

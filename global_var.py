@@ -35,7 +35,7 @@ COREDUMP_LOC = os.path.join("serv2", "eng", "nsait","workspace","nsait-main","so
 SYS_STATUS = ['OK','DOWNLOAD_ONLY','ERROR']
 BINARY_LIB = "\\\\serv2\\eng\\nsait\\workspace\\binary_lib\\"
 RESULT_LOC = "\\\\serv2\\home\\gcflab\\workspace\\"
-
+DOWNLOAD_DIR = r"C:\Users\Administrator\Desktop\auto_gui\download_all\tools"
 #################################################################################################
 # Globals
 #################################################################################################
@@ -59,7 +59,7 @@ ATTACH_STATUS  = "ATT"
 # Connection params
 #PORT_COM_TANGO     = "COM5"#34"#5
 PORT_COM_E410      = "COM22"
-FTP_ADDRESS        = '192.168.48.178'#'10.21.158.87'   # RV - Not a fixed address (change after each reboot) -> Need to fix that
+FTP_ADDRESS        = '192.168.0.2'#'10.21.158.87'   # RV - Not a fixed address (change after each reboot) -> Need to fix that
 FTP_SERVER_ADDRESS = '172.22.1.201'
 FTP_SERVER_USER    = 'anonymous'
 directory_downlink = "ftp_downlink"
