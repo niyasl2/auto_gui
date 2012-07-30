@@ -1,5 +1,5 @@
 MODEM_PORT  = "COM10"
-PORT_COM_TANGO     = "COM35"
+PORT_COM_TANGO     = "COM8"
 VID = "VID_0489"
 
 #Cardhu

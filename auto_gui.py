@@ -1727,7 +1727,7 @@ class CallboxTest():
         if common.CARDHU:
             self.compute_throughput_cardhu()
             return
-        if common.UDP:
+        if common.UDP_PROTO:
             return
         # Retrieve throughput
         if self.dl:

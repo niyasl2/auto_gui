@@ -37,9 +37,7 @@ BINARY_LIB = "\\\\serv2\\eng\\nsait\\workspace\\binary_lib\\"
 RESULT_LOC = "\\\\serv2\\home\\gcflab\\workspace\\"
 DOWNLOAD_DIR = r"C:\Users\Administrator\Desktop\auto_gui\download_all\tools"
 
-#IPERF_CMD
-IPERF_DL = r"start iperf\iperf -u -s 172.22.1.201 -p 5001"
-IPERF_UL = r"start iperf\iperf -u -c 172.22.1.201 -p 5001 -f KM -t 10000 -b "
+
 #################################################################################################
 # Globals
 #################################################################################################
@@ -63,7 +61,7 @@ ATTACH_STATUS  = "ATT"
 # Connection params
 #PORT_COM_TANGO     = "COM5"#34"#5
 PORT_COM_E410      = "COM22"
-FTP_ADDRESS        = '192.168.0.2'#'10.21.158.87'   # RV - Not a fixed address (change after each reboot) -> Need to fix that
+FTP_ADDRESS        = '10.21.158.74'   # RV - Not a fixed address (change after each reboot) -> Need to fix that
 FTP_SERVER_ADDRESS = '172.22.1.201'
 FTP_SERVER_USER    = 'anonymous'
 directory_downlink = "ftp_downlink"
@@ -146,7 +144,9 @@ ALLOWED_FTP = [
 
 #For UDP , Stop Condition    
 NB_CPULOAD = 100
-
+#IPERF_CMD
+IPERF_DL = r"start iperf\iperf -u -s 172.22.1.201 -p 5001"
+IPERF_UL = r"start iperf\iperf -u -c 172.22.1.201 -p 5001 -f KM -t %s -b "%(str(NB_CPULOAD))
 force_find_reg_after_attach_fail = False
 
 MAX_TEST_TIME = 3600 * 2

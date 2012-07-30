@@ -1086,7 +1086,7 @@ class MyForm(wx.Frame):
                 print "Run Test with Flashing"
                 Untar().main(self.entry.GetLabel())
                 Flash().flash_modem(99999,'cr3')
-                iCT.Init_Auto(self.branch_4test,self.band_4test,self.scenario_4test)
+                iCT.Init_Auto(self.branch_4test,self.band_4test,self.scenario_4test,self.protocol_4test)
                 iCT.Run_Branch_Test(Forced=self.force.IsChecked(),flash=False,Reg=self.cReg.IsChecked(),CL=self.cl,Resume=self.resume.IsChecked())
                 print "Run Test Finished"
             else:
