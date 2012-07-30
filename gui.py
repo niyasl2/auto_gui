@@ -109,24 +109,36 @@ class MyForm(wx.Frame):
        # sbsSelectScenario.Add(self.stSelectScenario, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL,10)
         bsSelectScenario = wx.BoxSizer ( wx.VERTICAL )
         bsSelectScenariox = []
-        bsSelectScenariox.append(wx.BoxSizer ( wx.HORIZONTAL ))
-        bsSelectScenariox.append(wx.BoxSizer ( wx.HORIZONTAL ))
         self.scen = []
 
 
-
+        counter = 0
+        index = -1
         for i in range(0,len(scenario_implemented)):
-            if re.search('MIMO',scenario_implemented[i]) or re.search('UDP',scenario_implemented[i]):
-                self.scen.append(wx.CheckBox(self.pl, -1 ,scenario_implemented[i]))
-                #self.scen[i].SetFont(font)
-                bsSelectScenariox[1].Add(self.scen[i],0, wx.ALL,1)
-            else:
-                self.scen.append(wx.CheckBox(self.pl, -1 ,scenario_implemented[i]))
-                #self.scen[i].SetFont(font)
-                bsSelectScenariox[0].Add(self.scen[i],0, wx.ALL,1)
+            self.scen.append(wx.CheckBox(self.pl, -1 ,scenario_implemented[i]))
+            # if re.search('UL',scenario_implemented[i]) and re.search('FTP',scenario_implemented[i]):
+                # self.scen[i].SetBackgroundColour("#ff154d")
+            # elif re.search('UL',scenario_implemented[i]) and re.search('UDP',scenario_implemented[i]):
+                # self.scen[i].SetBackgroundColour("#7fff00")
+            # elif re.search('DL',scenario_implemented[i]) and re.search('FTP',scenario_implemented[i]):
+                # self.scen[i].SetBackgroundColour("#0000ff")
+            # elif re.search('DL',scenario_implemented[i]) and re.search('UDP',scenario_implemented[i]):
+                # self.scen[i].SetBackgroundColour("#db7093")
+            if re.search('FTP',scenario_implemented[i]) :
+                self.scen[i].SetForegroundColour("#0000ff")
+            elif re.search('UDP',scenario_implemented[i]):
+                self.scen[i].SetForegroundColour("#db7093")
+                
+            if counter%5 == 0:
+                bsSelectScenariox.append(wx.BoxSizer ( wx.HORIZONTAL ))
+                index += 1
+            bsSelectScenariox[index].Add(self.scen[i],0, wx.ALL,1)
+            counter += 1
+            
+        #self.scen[i].SetFont(font)
 
         self.Alltest = wx.CheckBox(self.pl, -1 ,"All")
-        bsSelectScenariox[1].Add(self.Alltest)
+        bsSelectScenariox[index].Add(self.Alltest)
 
         for i in range(0,len(bsSelectScenariox)):
             bsSelectScenario.Add(bsSelectScenariox[i])
@@ -1074,7 +1086,7 @@ class MyForm(wx.Frame):
 
     def Start_Test(self):
         iCT = CallboxTest()
-        iCT.Init_Auto(self.branch_4test,self.band_4test,self.scenario_4test,self.protocol_4test)
+        iCT.Init_Auto(self.branch_4test,self.band_4test,self.scenario_4test)
         if self.rbCustom.IsChecked():
             iCT.custom_config(rlc=self.tcrlc.GetValue(),dl_rb=int(self.tcdlrb.GetValue()),dl_tb=int(self.tcdltb.GetValue()),ul_rb=int(self.tculrb.GetValue()),ul_tb=int(self.tcultb.GetValue()),dl_size=int(self.tcDownlik_size.GetValue()),ul_size=int(self.tcUplink_size.GetValue()),tm=int(self.tcmode.GetValue()),dir=self.tcDirection.GetValue())
 
@@ -1086,7 +1098,7 @@ class MyForm(wx.Frame):
                 print "Run Test with Flashing"
                 Untar().main(self.entry.GetLabel())
                 Flash().flash_modem(99999,'cr3')
-                iCT.Init_Auto(self.branch_4test,self.band_4test,self.scenario_4test,self.protocol_4test)
+                iCT.Init_Auto(self.branch_4test,self.band_4test,self.scenario_4test)
                 iCT.Run_Branch_Test(Forced=self.force.IsChecked(),flash=False,Reg=self.cReg.IsChecked(),CL=self.cl,Resume=self.resume.IsChecked())
                 print "Run Test Finished"
             else:
