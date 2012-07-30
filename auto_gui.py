@@ -399,10 +399,17 @@ class CallboxTest():
         FILE.write("[CL%d Branch:%s Band:%d Test:%s Status:%s] \n" % (self.cl,branch,int(self.band),self.scen_name,status))
         FILE.close()
 
-    def run_scenario(self, scen_name,Forced=False):
-        common.UDP_PROTO = True
+    def run_scenario(self, scen_name,protocol="FTP",Forced=False):
+        if protocol == "UDP":
+            common.UDP_PROTO = True
+        else:
+            common.UDP_PROTO = False
+            
         if self.available_scenario_name(scen_name):
             self.init_param_for_startup()
+            if protocol == "UDP":
+                scen_name.replace('FTP','UDP')
+                self.scen_name = scen_name
             if self.scen_not_pass_yet() or Forced: # Check that the test is not already pass for this CL
                 print "--->Start scenario: %s (in Band%d)" % (scen_name, int(self.band))
                 #Info in Status.txt
@@ -461,6 +468,12 @@ class CallboxTest():
         # self.ltemeas = 0
         # self.clock = 0
         # Check Band
+        if common.UDP_PROTO:
+            if not scen_name in ALLOWED_UDP:
+                print "\nUDP Version of this scenario is not implemented yet"
+                self.scen_name = ""
+                return False
+            
         if re.search("BAND17_", scen_name):
             self.band = 17
             scen_name = scen_name.replace("BAND17_", "")
@@ -2447,12 +2460,13 @@ class CallboxTest():
             self.config_init()
             self.test_branch(branch,'unit',flash,Reg,Forced,CL,Resume)
 
-    def Init_Auto(self,branch4test,band4test,scenario4test):
+    def Init_Auto(self,branch4test,band4test,scenario4test,protocol4test):
         global  BAND_TANGO_ALLOWED , scenario_implemented
         self.branch_4test = Tools().string_array(branch4test)
         #BRANCH_ALLOWED = branch4test
         scenario_implemented = Tools().string_array(scenario4test)
         BAND_TANGO_ALLOWED = Tools().string_array(band4test)
+        PROTOCOL_4TEST = Tools().string_array(protocol4test)
         self.band_allowed = BAND_TANGO_ALLOWED
         self.comport = common.PORT_COM_TANGO
         self.config_init()
@@ -2546,7 +2560,8 @@ class CallboxTest():
         self.heapinfo()
         for self.band in BAND_TANGO_ALLOWED :
             for scen in scenario_implemented:
-                self.run_scenario(scen,Forced)
+                for protocol in PROTOCOL_4TEST:
+                    self.run_scenario(scen,protocol,Forced)
 
         if Reg or test == 'auto':
             self.ReTest_Regression()

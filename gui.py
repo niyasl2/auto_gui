@@ -145,6 +145,17 @@ class MyForm(wx.Frame):
         bsBandSelection.Add(self.band4,0, wx.ALL,10)
         bsBandSelection.Add(self.band17,0, wx.ALL,10)
         sbsBandSelection.Add(bsBandSelection, 0, wx.CENTER,10)
+        
+        # ProtocolSelection Part
+        sbProtocolSelection = wx.StaticBox(self.pl, -1, 'ProtocolSelection', size=(-1, -1))
+        #sbProtocolSelection.SetForegroundColour(wx.BLUE)
+        sbsProtocolSelection = wx.StaticBoxSizer(sbProtocolSelection, wx.VERTICAL)
+        bsProtocolSelection = wx.BoxSizer ( wx.HORIZONTAL )
+        self.cftp = wx.CheckBox(self.pl, -1 ,'FTP')
+        self.cudp = wx.CheckBox(self.pl, -1 ,'UDP')
+        bsProtocolSelection.Add(self.cftp,0, wx.ALL,10)
+        bsProtocolSelection.Add(self.cudp,0, wx.ALL,10)
+        sbsProtocolSelection.Add(bsProtocolSelection, 0, wx.CENTER,10)
 
         # AdditionalOption Part
         sbAdditionOption = wx.StaticBox(self.pl, -1, 'AdditionOption', size=(-1, -1))
@@ -333,6 +344,7 @@ class MyForm(wx.Frame):
         bsTTBS.Add(sbsTestType, 0, wx.EXPAND)
         bsTTBS.Add(sbsBranchSelection, 0, wx.EXPAND)
         bsTTBS.Add(sbsBandSelection, 0, wx.EXPAND)
+        bsTTBS.Add(sbsProtocolSelection, 0, wx.EXPAND)
         bsTTBS.Add(sbsAdditionOption, 0, wx.EXPAND)
         #bsTTBS.Add(sbsPlatformType, 0, wx.EXPAND)
         bsTTBS.Add(self.rbplatform, 0, wx.EXPAND)
@@ -754,6 +766,13 @@ class MyForm(wx.Frame):
            self.band_4test.append(4)
         if self.band17.IsChecked():
             self.band_4test.append(17)
+            
+        self.protocol_4test =[]
+        if self.cftp.IsChecked():
+           self.protocol_4test.append("FTP")
+        if self.cudp.IsChecked():
+            self.protocol_4test.append("UDP")
+            
         #BAND_TANGO_ALLOWED = band_4test
 
         self.scenario_4test = []
@@ -1055,7 +1074,7 @@ class MyForm(wx.Frame):
 
     def Start_Test(self):
         iCT = CallboxTest()
-        iCT.Init_Auto(self.branch_4test,self.band_4test,self.scenario_4test)
+        iCT.Init_Auto(self.branch_4test,self.band_4test,self.scenario_4test,self.protocol_4test)
         if self.rbCustom.IsChecked():
             iCT.custom_config(rlc=self.tcrlc.GetValue(),dl_rb=int(self.tcdlrb.GetValue()),dl_tb=int(self.tcdltb.GetValue()),ul_rb=int(self.tculrb.GetValue()),ul_tb=int(self.tcultb.GetValue()),dl_size=int(self.tcDownlik_size.GetValue()),ul_size=int(self.tcUplink_size.GetValue()),tm=int(self.tcmode.GetValue()),dir=self.tcDirection.GetValue())
 

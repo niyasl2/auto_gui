@@ -126,6 +126,14 @@ scenario_implemented = [
     #"FTP_DL_MIMO_AM_FIND_MAX_DEFAULT"
     ]
 
+ALLOWED_UDP =[
+     "FTP_DL_SISO_AM_RB50_TBS26",
+     "FTP_UL_AM_RB45_TBSIDX18_2_FILES",
+     "FTP_UL_UM_RB45_TBSIDX18_2_FILES",
+     "FTP_COMB_DLUL_2_FILES_UL",
+     "FTP_DL_MIMO_AM_RB42_TBS24"
+    ]
+    
 NB_CPULOAD = 100
 force_find_reg_after_attach_fail = False
 
