@@ -408,8 +408,12 @@ class CallboxTest():
         if self.available_scenario_name(scen_name):
             self.init_param_for_startup()
             if protocol == "UDP":
-                scen_name = scen_name.replace('FTP','UDP')
+                scen_name = scen_name.replace('IP','UDP')
                 self.scen_name = scen_name
+            elif protocol == "FTP":
+                scen_name = scen_name.replace('IP','FTP')
+                self.scen_name = scen_name
+                
             if self.scen_not_pass_yet() or Forced: # Check that the test is not already pass for this CL
                 print "--->Start scenario: %s (in Band%d)" % (scen_name, int(self.band))
                 #Info in Status.txt
@@ -473,6 +477,11 @@ class CallboxTest():
                 print "\nUDP Version of this scenario is not implemented yet"
                 self.scen_name = ""
                 return False
+        else:
+            if not scen_name in ALLOWED_FTP:
+                print "\nFTP Version of this scenario is not implemented yet"
+                self.scen_name = ""
+                return False
             
         if re.search("BAND17_", scen_name):
             self.band = 17
@@ -497,19 +506,19 @@ class CallboxTest():
         #     self.test_cpuload = 0
         # elif re.search("PING"):
         #     self.test_cpuload = 0
-        # elif re.search("FTP"):
+        # elif re.search("IP"):
         #     self.test_cpuload = 1
         # else:
         #     self.test_cpuload = 0
-        #     print "Warning: No test type defined - ATTACH(default), PING or FTP"
+        #     print "Warning: No test type defined - ATTACH(default), PING or IP"
         # Check Test Type
-        if re.search("FTP_DL_", scen_name):
+        if re.search("IP_DL_", scen_name):
             self.dl = 1
             self.regression_delta = REGRESSION_DELTA_DOWNLINK
-        elif re.search("FTP_UL_", scen_name) :
+        elif re.search("IP_UL_", scen_name) :
             self.ul = 1
             self.regression_delta = REGRESSION_DELTA_UPLINK
-        elif re.search("FTP_COMB_DLUL_", scen_name) :
+        elif re.search("IP_COMB_DLUL_", scen_name) :
             self.dl = 1
             self.ul = 1
             self.regression_delta = REGRESSION_DELTA_UPLINK
@@ -536,7 +545,7 @@ class CallboxTest():
         self.rlc_mode = "UM"
         self.ltemeas = -1        ##### CHECK THAT DISABLE on main.br
         self.clock = 0
-        if re.search("FTP_DL_SISO_AM_RB50_TBS25_", scen_name):
+        if re.search("IP_DL_SISO_AM_RB50_TBS25_", scen_name):
             self.tm = 1 # self.tm = 2
             self.dl_rb     = 50
             self.dl_tbsidx = 25
@@ -544,7 +553,7 @@ class CallboxTest():
             self.ul_tbsidx = 15
             self.rlc_mode = "AM"
             self.dl_file_size = 1000
-        elif re.search("FTP_DL_SISO_AM_RB50_TBS26_", scen_name):
+        elif re.search("IP_DL_SISO_AM_RB50_TBS26_", scen_name):
             self.tm = 1 # self.tm = 2
             self.dl_rb     = 50
             self.dl_tbsidx = 26
@@ -552,7 +561,7 @@ class CallboxTest():
             self.ul_tbsidx = 15
             self.rlc_mode = "AM"
             self.dl_file_size = 1000
-        elif re.search("FTP_DL_MIMO_AM_RB39_TBS25_", scen_name):
+        elif re.search("IP_DL_MIMO_AM_RB39_TBS25_", scen_name):
             self.tm = 3
             self.rlc_mode = "AM"
             self.dl_rb     = 39
@@ -560,8 +569,8 @@ class CallboxTest():
             self.ul_rb     = 4
             self.ul_tbsidx = 16
             self.dl_file_size = 1000
-        elif re.search("FTP_DL_MIMO_AM_RB42_TBS24_", scen_name) :
-            print "Inside FTP_DL_MIMO_AM_RB42_TBS24_"
+        elif re.search("IP_DL_MIMO_AM_RB42_TBS24_", scen_name) :
+            print "Inside IP_DL_MIMO_AM_RB42_TBS24_"
             self.tm = 3
             self.rlc_mode = "AM"
             self.dl_rb     = 42
@@ -579,51 +588,51 @@ class CallboxTest():
         elif scen_name == "PING_MIMO":
             self.test_cpuload = 0
             self.tm = 3
-        elif scen_name == "FTP_DL_SISO_AM_RB50_TBS25":
+        elif scen_name == "IP_DL_SISO_AM_RB50_TBS25":
             self.tm = 1 # self.tm = 2
             self.dl_rb     = 50
             self.dl_tbsidx = 25
             self.ul_rb     = 3
             self.ul_tbsidx = 15
             self.rlc_mode = "AM"
-        elif scen_name == "FTP_DL_SISO_AM_RB50_TBS26" :
+        elif scen_name == "IP_DL_SISO_AM_RB50_TBS26" :
             self.tm = 1 # self.tm = 2
             self.dl_rb     = 50
             self.dl_tbsidx = 26
             self.ul_rb     = 4
             self.ul_tbsidx = 16
             self.rlc_mode = "AM"
-        elif scen_name == "FTP_DL_AM_RB45_TBSIDX24":
+        elif scen_name == "IP_DL_AM_RB45_TBSIDX24":
             self.dl_rb     = 45
             self.dl_tbsidx = 24
             self.ul_rb     = 10
             self.ul_tbsidx = 10
             self.rlc_mode = "AM"
-        elif scen_name == "FTP_UL_UM_MAX_1_FILE":
+        elif scen_name == "IP_UL_UM_MAX_1_FILE":
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 50
             self.ul_tbsidx = 19
             self.num_files_in_ul = 1
-        elif scen_name == "FTP_UL_UM_MAX_2_FILES":
+        elif scen_name == "IP_UL_UM_MAX_2_FILES":
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 50
             self.ul_tbsidx = 19
             self.num_files_in_ul = 2
-        elif scen_name == "FTP_UL_UM_MAX_3_FILES":
+        elif scen_name == "IP_UL_UM_MAX_3_FILES":
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 50
             self.ul_tbsidx = 19
             self.num_files_in_ul = 3
-        elif scen_name == "FTP_UL_UM_RB45_TBSIDX18_1_FILE":
+        elif scen_name == "IP_UL_UM_RB45_TBSIDX18_1_FILE":
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 45
             self.ul_tbsidx = 18
             self.num_files_in_ul = 1
-        elif scen_name == "FTP_UL_AM_RB45_TBSIDX18_2_FILES" :
+        elif scen_name == "IP_UL_AM_RB45_TBSIDX18_2_FILES" :
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 45
@@ -631,7 +640,7 @@ class CallboxTest():
             self.num_files_in_ul = 2
             self.rlc_mode = "AM"
             self.ul_file_size = 500
-        elif scen_name == "FTP_UL_AM_RB40_TBSIDX16_2_FILES":
+        elif scen_name == "IP_UL_AM_RB40_TBSIDX16_2_FILES":
             self.dl_rb     = 4
             self.dl_tbsidx = 15
             self.ul_rb     = 40
@@ -639,7 +648,7 @@ class CallboxTest():
             self.num_files_in_ul = 2
             self.rlc_mode = "AM"
             self.ul_file_size = 500
-        elif re.search("FTP_UL_AM_RB50_TBSIDX18_2_FILES_", scen_name):
+        elif re.search("IP_UL_AM_RB50_TBSIDX18_2_FILES_", scen_name):
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 50
@@ -647,7 +656,7 @@ class CallboxTest():
             self.num_files_in_ul = 2
             self.rlc_mode = "AM"
             self.ul_file_size = 500
-        elif scen_name == "FTP_UL_AM_RB45_TBSIDX18_2_FILES":
+        elif scen_name == "IP_UL_AM_RB45_TBSIDX18_2_FILES":
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 45
@@ -655,7 +664,7 @@ class CallboxTest():
             self.num_files_in_ul = 2
             self.rlc_mode = "AM"
             self.ul_file_size = 500 # Added since around CL453170
-        elif re.search("FTP_UL_AM_OOS_SEARCH_RB45_TBS18_2_FILES_", scen_name):
+        elif re.search("IP_UL_AM_OOS_SEARCH_RB45_TBS18_2_FILES_", scen_name):
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 45
@@ -663,7 +672,7 @@ class CallboxTest():
             self.num_files_in_ul = 2
             self.rlc_mode = "AM"
             self.ul_file_size = 500
-        elif re.search("FTP_UL_AM_OOS_SEARCH_RB50_TBS18_2_FILES_", scen_name):
+        elif re.search("IP_UL_AM_OOS_SEARCH_RB50_TBS18_2_FILES_", scen_name):
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 50
@@ -671,56 +680,56 @@ class CallboxTest():
             self.num_files_in_ul = 2
             self.rlc_mode = "AM"
             self.ul_file_size = 500
-        elif scen_name == "FTP_UL_AM_MAX_2_FILES":
+        elif scen_name == "IP_UL_AM_MAX_2_FILES":
             self.dl_rb     = 4
             self.dl_tbsidx = 16
             self.ul_rb     = 50
             self.ul_tbsidx = 19
             self.num_files_in_ul = 2
             self.rlc_mode = "AM"
-        elif scen_name == "FTP_UL_UM_RB45_TBSIDX18_2_FILES":
+        elif scen_name == "IP_UL_UM_RB45_TBSIDX18_2_FILES":
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 45
             self.ul_tbsidx = 18
             self.num_files_in_ul = 2
-        elif scen_name == "FTP_COMB_DLUL_1_FILE_UL":
+        elif scen_name == "IP_COMB_DLUL_1_FILE_UL":
             self.dl_rb     = 25
             self.dl_tbsidx = 24
             self.ul_rb     = 25
             self.ul_tbsidx = 16
             self.num_files_in_ul = 1
             self.dl_file_size = 100   # Special Tune to be sure that the DL and UL transfer will terminate at the same time
-        elif scen_name == "FTP_COMB_DLUL_2_FILES_UL":
+        elif scen_name == "IP_COMB_DLUL_2_FILES_UL":
             self.dl_rb     = 25
             self.dl_tbsidx = 24
             self.ul_rb     = 25
             self.ul_tbsidx = 16
             self.num_files_in_ul = 2
             self.dl_file_size = 200   # Special Tune to be sure that the DL and UL transfer will terminate at the same time
-        elif scen_name == "FTP_DL_MIMO_AM_RB39_TBS24":
+        elif scen_name == "IP_DL_MIMO_AM_RB39_TBS24":
             self.tm = 3
             self.rlc_mode = "AM"
             self.dl_rb     = 39
             self.dl_tbsidx = 24
             self.ul_rb     = 4
             self.ul_tbsidx = 16
-        elif scen_name == "FTP_DL_MIMO_AM_RB39_TBS25":
+        elif scen_name == "IP_DL_MIMO_AM_RB39_TBS25":
             self.tm = 3
             self.rlc_mode = "AM"
             self.dl_rb     = 39
             self.dl_tbsidx = 25
             self.ul_rb     = 4
             self.ul_tbsidx = 16
-        elif scen_name == "FTP_DL_MIMO_AM_RB42_TBS24":
-            print "Inside FTP_DL_MIMO_AM_RB42_TBS24_"
+        elif scen_name == "IP_DL_MIMO_AM_RB42_TBS24":
+            print "Inside IP_DL_MIMO_AM_RB42_TBS24_"
             self.tm = 3
             self.rlc_mode = "AM"
             self.dl_rb     = 42
             self.dl_tbsidx = 24
             self.ul_rb     = 4
             self.ul_tbsidx = 16
-        elif scen_name == "FTP_DL_MIMO_AM_FIND_MAX_DEFAULT":
+        elif scen_name == "IP_DL_MIMO_AM_FIND_MAX_DEFAULT":
             self.tm = 3
             self.rlc_mode = "AM"
             # self.dl_rb     = 39
