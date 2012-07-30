@@ -489,19 +489,24 @@ class CallboxTest():
         #     self.test_cpuload = 0
         #     print "Warning: No test type defined - ATTACH(default), PING or FTP"
         # Check Test Type
-        if re.search("FTP_DL_", scen_name):
+        if re.search("_DL_", scen_name):
             self.dl = 1
             self.regression_delta = REGRESSION_DELTA_DOWNLINK
-        elif re.search("FTP_UL_", scen_name):
+        elif re.search("_UL_", scen_name):
             self.ul = 1
             self.regression_delta = REGRESSION_DELTA_UPLINK
-        elif re.search("FTP_COMB_DLUL_", scen_name):
+        elif re.search("_COMB_DLUL_", scen_name):
             self.dl = 1
             self.ul = 1
             self.regression_delta = REGRESSION_DELTA_UPLINK
         else:
             self.regression_delta = REGRESSION_DELTA_DOWNLINK
             print "ERROR: test not conformed"
+            
+        if re.search("UDP", scen_name):
+            common.UDP_PROTO = True
+        elif re.search("FTP", scen_name):
+            common.UDP_PROTO = False
             #assert(False)
         # # Check Test Type
         # if re.search("_1_FILE"):
@@ -521,7 +526,7 @@ class CallboxTest():
         self.rlc_mode = "UM"
         self.ltemeas = -1        ##### CHECK THAT DISABLE on main.br
         self.clock = 0
-        if re.search("FTP_DL_SISO_AM_RB50_TBS25_", scen_name):
+        if re.search("_DL_SISO_AM_RB50_TBS25_", scen_name):
             self.tm = 1 # self.tm = 2
             self.dl_rb     = 50
             self.dl_tbsidx = 25
@@ -529,7 +534,7 @@ class CallboxTest():
             self.ul_tbsidx = 15
             self.rlc_mode = "AM"
             self.dl_file_size = 1000
-        elif re.search("FTP_DL_SISO_AM_RB50_TBS26_", scen_name):
+        elif re.search("_DL_SISO_AM_RB50_TBS26_", scen_name):
             self.tm = 1 # self.tm = 2
             self.dl_rb     = 50
             self.dl_tbsidx = 26
@@ -537,7 +542,7 @@ class CallboxTest():
             self.ul_tbsidx = 15
             self.rlc_mode = "AM"
             self.dl_file_size = 1000
-        elif re.search("FTP_DL_MIMO_AM_RB39_TBS25_", scen_name):
+        elif re.search("_DL_MIMO_AM_RB39_TBS25_", scen_name):
             self.tm = 3
             self.rlc_mode = "AM"
             self.dl_rb     = 39
@@ -545,7 +550,7 @@ class CallboxTest():
             self.ul_rb     = 4
             self.ul_tbsidx = 16
             self.dl_file_size = 1000
-        elif re.search("FTP_DL_MIMO_AM_RB42_TBS24_", scen_name):
+        elif re.search("_DL_MIMO_AM_RB42_TBS24_", scen_name):
             print "Inside FTP_DL_MIMO_AM_RB42_TBS24_"
             self.tm = 3
             self.rlc_mode = "AM"
@@ -564,51 +569,51 @@ class CallboxTest():
         elif scen_name == "PING_MIMO":
             self.test_cpuload = 0
             self.tm = 3
-        elif scen_name == "FTP_DL_SISO_AM_RB50_TBS25":
+        elif scen_name == "_DL_SISO_AM_RB50_TBS25":
             self.tm = 1 # self.tm = 2
             self.dl_rb     = 50
             self.dl_tbsidx = 25
             self.ul_rb     = 3
             self.ul_tbsidx = 15
             self.rlc_mode = "AM"
-        elif scen_name == "FTP_DL_SISO_AM_RB50_TBS26":
+        elif scen_name == "_DL_SISO_AM_RB50_TBS26":
             self.tm = 1 # self.tm = 2
             self.dl_rb     = 50
             self.dl_tbsidx = 26
             self.ul_rb     = 4
             self.ul_tbsidx = 16
             self.rlc_mode = "AM"
-        elif scen_name == "FTP_DL_AM_RB45_TBSIDX24":
+        elif scen_name == "_DL_AM_RB45_TBSIDX24":
             self.dl_rb     = 45
             self.dl_tbsidx = 24
             self.ul_rb     = 10
             self.ul_tbsidx = 10
             self.rlc_mode = "AM"
-        elif scen_name == "FTP_UL_UM_MAX_1_FILE":
+        elif scen_name == "_UL_UM_MAX_1_FILE":
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 50
             self.ul_tbsidx = 19
             self.num_files_in_ul = 1
-        elif scen_name == "FTP_UL_UM_MAX_2_FILES":
+        elif scen_name == "_UL_UM_MAX_2_FILES":
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 50
             self.ul_tbsidx = 19
             self.num_files_in_ul = 2
-        elif scen_name == "FTP_UL_UM_MAX_3_FILES":
+        elif scen_name == "_UL_UM_MAX_3_FILES":
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 50
             self.ul_tbsidx = 19
             self.num_files_in_ul = 3
-        elif scen_name == "FTP_UL_UM_RB45_TBSIDX18_1_FILE":
+        elif scen_name == "_UL_UM_RB45_TBSIDX18_1_FILE":
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 45
             self.ul_tbsidx = 18
             self.num_files_in_ul = 1
-        elif scen_name == "FTP_UL_AM_RB45_TBSIDX18_2_FILES":
+        elif scen_name == "_UL_AM_RB45_TBSIDX18_2_FILES":
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 45
@@ -616,7 +621,7 @@ class CallboxTest():
             self.num_files_in_ul = 2
             self.rlc_mode = "AM"
             self.ul_file_size = 500
-        elif scen_name == "FTP_UL_AM_RB40_TBSIDX16_2_FILES":
+        elif scen_name == "_UL_AM_RB40_TBSIDX16_2_FILES":
             self.dl_rb     = 4
             self.dl_tbsidx = 15
             self.ul_rb     = 40
@@ -624,7 +629,7 @@ class CallboxTest():
             self.num_files_in_ul = 2
             self.rlc_mode = "AM"
             self.ul_file_size = 500
-        elif re.search("FTP_UL_AM_RB50_TBSIDX18_2_FILES_", scen_name):
+        elif re.search("_UL_AM_RB50_TBSIDX18_2_FILES_", scen_name):
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 50
@@ -632,7 +637,7 @@ class CallboxTest():
             self.num_files_in_ul = 2
             self.rlc_mode = "AM"
             self.ul_file_size = 500
-        elif scen_name == "FTP_UL_AM_RB45_TBSIDX18_2_FILES":
+        elif scen_name == "_UL_AM_RB45_TBSIDX18_2_FILES":
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 45
@@ -640,7 +645,7 @@ class CallboxTest():
             self.num_files_in_ul = 2
             self.rlc_mode = "AM"
             self.ul_file_size = 500 # Added since around CL453170
-        elif re.search("FTP_UL_AM_OOS_SEARCH_RB45_TBS18_2_FILES_", scen_name):
+        elif re.search("_UL_AM_OOS_SEARCH_RB45_TBS18_2_FILES_", scen_name):
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 45
@@ -648,7 +653,7 @@ class CallboxTest():
             self.num_files_in_ul = 2
             self.rlc_mode = "AM"
             self.ul_file_size = 500
-        elif re.search("FTP_UL_AM_OOS_SEARCH_RB50_TBS18_2_FILES_", scen_name):
+        elif re.search("_UL_AM_OOS_SEARCH_RB50_TBS18_2_FILES_", scen_name):
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 50
@@ -656,48 +661,48 @@ class CallboxTest():
             self.num_files_in_ul = 2
             self.rlc_mode = "AM"
             self.ul_file_size = 500
-        elif scen_name == "FTP_UL_AM_MAX_2_FILES":
+        elif scen_name == "_UL_AM_MAX_2_FILES":
             self.dl_rb     = 4
             self.dl_tbsidx = 16
             self.ul_rb     = 50
             self.ul_tbsidx = 19
             self.num_files_in_ul = 2
             self.rlc_mode = "AM"
-        elif scen_name == "FTP_UL_UM_RB45_TBSIDX18_2_FILES":
+        elif scen_name == "_UL_UM_RB45_TBSIDX18_2_FILES":
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 45
             self.ul_tbsidx = 18
             self.num_files_in_ul = 2
-        elif scen_name == "FTP_COMB_DLUL_1_FILE_UL":
+        elif scen_name == "_COMB_DLUL_1_FILE_UL":
             self.dl_rb     = 25
             self.dl_tbsidx = 24
             self.ul_rb     = 25
             self.ul_tbsidx = 16
             self.num_files_in_ul = 1
             self.dl_file_size = 100   # Special Tune to be sure that the DL and UL transfer will terminate at the same time
-        elif scen_name == "FTP_COMB_DLUL_2_FILES_UL":
+        elif scen_name == "_COMB_DLUL_2_FILES_UL":
             self.dl_rb     = 25
             self.dl_tbsidx = 24
             self.ul_rb     = 25
             self.ul_tbsidx = 16
             self.num_files_in_ul = 2
             self.dl_file_size = 200   # Special Tune to be sure that the DL and UL transfer will terminate at the same time
-        elif scen_name == "FTP_DL_MIMO_AM_RB39_TBS24":
+        elif scen_name == "_DL_MIMO_AM_RB39_TBS24":
             self.tm = 3
             self.rlc_mode = "AM"
             self.dl_rb     = 39
             self.dl_tbsidx = 24
             self.ul_rb     = 4
             self.ul_tbsidx = 16
-        elif scen_name == "FTP_DL_MIMO_AM_RB39_TBS25":
+        elif scen_name == "_DL_MIMO_AM_RB39_TBS25":
             self.tm = 3
             self.rlc_mode = "AM"
             self.dl_rb     = 39
             self.dl_tbsidx = 25
             self.ul_rb     = 4
             self.ul_tbsidx = 16
-        elif scen_name == "FTP_DL_MIMO_AM_RB42_TBS24":
+        elif scen_name == "_DL_MIMO_AM_RB42_TBS24":
             print "Inside FTP_DL_MIMO_AM_RB42_TBS24_"
             self.tm = 3
             self.rlc_mode = "AM"
@@ -705,7 +710,7 @@ class CallboxTest():
             self.dl_tbsidx = 24
             self.ul_rb     = 4
             self.ul_tbsidx = 16
-        elif scen_name == "FTP_DL_MIMO_AM_FIND_MAX_DEFAULT":
+        elif scen_name == "_DL_MIMO_AM_FIND_MAX_DEFAULT":
             self.tm = 3
             self.rlc_mode = "AM"
             # self.dl_rb     = 39
@@ -1347,7 +1352,20 @@ class CallboxTest():
             if self.num_files_in_ul > 2:
                 time.sleep(2)
                 self.iCtrl.send_cmd('ftp_uplink_stream3')
-
+                
+    def start_udp(self):
+        self.callbox.write("INIT:DATA:MEAS1:IPERf")
+        if self.dl:
+            self.callbox.write("CONFigure:DATA:MEAS1:IPERf:TDURation 1000")
+            self.callbox.write("CONFigure:DATA:MEAS1:IPERf:CLIent1:PORT 5001")
+            self.callbox.write("CONFigure:DATA:MEAS1:IPERf:CLIent1:WSIZe 32")
+            self.callbox.write("CONFigure:DATA:MEAS1:IPERf:CLIent1:LPORt")
+            self.callbox.write("CONFigure:DATA:MEAS1:IPERf:CLIent1:BITRate 56M")
+            self.callbox.write("CONFigure:DATA:MEAS1:IPERf:CLIent1:PROTocol UDP")
+            self.callbox.write("CONFigure:DATA:MEAS1:IPERf:CLIENT1:ENABLE ON")
+        if self.ul:
+            ul_rate = self.get_therical_throughput("UL")
+            os.system(IPERF_UL+str(ul_rate)+"M")
 
     def start_ftp(self, dl_file_size):
         #CARDHU_CODE
@@ -1355,7 +1373,11 @@ class CallboxTest():
             self.start_ftp_cardhu()
             return True
         #CARDHU_END
-
+        #UDP_PROTO
+        if common.UDP_PROTO:
+            self.start_udp()
+            return True
+        #UDP_END
         # Startup the FTP
         if self.dl:
             self.File_DL = File_download()
@@ -1394,6 +1416,11 @@ class CallboxTest():
         if common.CARDHU:
             return self.iCtrl.send_cmd('ftp_thread_active')
 
+        if common.UDP:
+            if self.cpu_count < self.NB_CPULOAD :
+                return True
+            else:
+                return False
         if self.dl:
             if self.File_DL.isAlive():
                 return True
@@ -1680,7 +1707,8 @@ class CallboxTest():
         if common.CARDHU:
             self.compute_throughput_cardhu()
             return
-
+        if common.UDP:
+            return
         # Retrieve throughput
         if self.dl:
             try:
@@ -1904,6 +1932,10 @@ class CallboxTest():
     def terminate_sequence(self):
         print "\nTerminating sequence..."
         # Checking for assert/Afault
+        if common.UDP:
+            self.callbox.write("STOP:DATA:MEAS1:IPERf")
+            self.callbox.write("ABORt:DATA:MEAS1:IPERf")
+            
         self.check_assert_report(self.dl_rb, self.dl_tbsidx)
         if not self.status == STATUS_ERROR:
             # Compute throughputs and size

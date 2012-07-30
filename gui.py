@@ -116,7 +116,7 @@ class MyForm(wx.Frame):
 
 
         for i in range(0,len(scenario_implemented)):
-            if re.search('MIMO',scenario_implemented[i]):
+            if re.search('MIMO',scenario_implemented[i]) or re.search('UDP',scenario_implemented[i]):
                 self.scen.append(wx.CheckBox(self.pl, -1 ,scenario_implemented[i]))
                 #self.scen[i].SetFont(font)
                 bsSelectScenariox[1].Add(self.scen[i],0, wx.ALL,1)

@@ -36,6 +36,10 @@ SYS_STATUS = ['OK','DOWNLOAD_ONLY','ERROR']
 BINARY_LIB = "\\\\serv2\\eng\\nsait\\workspace\\binary_lib\\"
 RESULT_LOC = "\\\\serv2\\home\\gcflab\\workspace\\"
 DOWNLOAD_DIR = r"C:\Users\Administrator\Desktop\auto_gui\download_all\tools"
+
+#IPERF_CMD
+IPERF_DL = r"start iperf\iperf -u -s 172.22.1.201 -p 5001"
+IPERF_UL = r"start iperf\iperf -u -c 172.22.1.201 -p 5001 -f KM -t 10000 -b "
 #################################################################################################
 # Globals
 #################################################################################################
@@ -106,14 +110,19 @@ scenario_implemented = [
     "FTP_DL_SISO_AM_RB50_TBS25",
      "FTP_DL_SISO_AM_RB50_TBS26",
      "FTP_UL_AM_RB45_TBSIDX18_2_FILES",
-     "FTP_UL_AM_RB40_TBSIDX16_2_FILES",
+     #"FTP_UL_AM_RB40_TBSIDX16_2_FILES",
      # "FTP_UL_AM_MAX_2_FILES",
      # "FTP_UL_UM_RB45_TBSIDX18_1_FILE",
      "FTP_UL_UM_RB45_TBSIDX18_2_FILES",
      # "FTP_COMB_DLUL_1_FILE_UL",
      "FTP_COMB_DLUL_2_FILES_UL",
     "FTP_DL_MIMO_AM_RB39_TBS25",
-      "FTP_DL_MIMO_AM_RB42_TBS24",
+    "FTP_DL_MIMO_AM_RB42_TBS24",
+    "UDP_DL_SISO_AM_RB50_TBS26",
+    "UDP_UL_AM_RB45_TBSIDX18_2_FILES",
+    "UDP_UL_UM_RB45_TBSIDX18_2_FILES",
+    "UDP_COMB_DLUL_2_FILES_UL",
+    "UDP_DL_MIMO_AM_RB42_TBS24"
     #"FTP_DL_MIMO_AM_FIND_MAX_DEFAULT"
     ]
 
