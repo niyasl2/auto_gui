@@ -126,7 +126,7 @@ scenario_implemented = [
     #"FTP_DL_MIMO_AM_FIND_MAX_DEFAULT"
     ]
 
-
+NB_CPULOAD = 100
 force_find_reg_after_attach_fail = False
 
 MAX_TEST_TIME = 3600 * 2

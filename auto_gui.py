@@ -1414,8 +1414,8 @@ class CallboxTest():
         if common.CARDHU:
             return self.iCtrl.send_cmd('ftp_thread_active')
 
-        if common.UDP:
-            if self.cpu_count < self.NB_CPULOAD :
+        if common.UDP_PROTO:
+            if self.counter_sec < NB_CPULOAD :
                 return True
             else:
                 return False
