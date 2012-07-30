@@ -778,6 +778,7 @@ class CallboxTest():
         from visa import instrument
         try:
             command = "TCPIP0::" + FTP_ADDRESS + "::inst0::INSTR"
+            #TCPIP0::192.168.0.2::inst0::INSTR 
             self.callbox = instrument(command)        # RV - SHOULD GET A FIXED DOMAIN
         except:
             Tools().sendMail(r"TCPIP error - Check instruments")
@@ -2470,7 +2471,7 @@ class CallboxTest():
             if duration > SCHEDULED_BUILD_TIME:
                 timer = time.time()
                 #i = 0
-                for branch in self.branch_4test :
+                for branch in reversed(self.branch_4test) :
                     i = Tools().find_index(BRANCH_ALLOWED,branch)
                     EXCEL_FILE = EXCEL_FLIST[i]
                     self.config_init()
