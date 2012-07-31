@@ -144,6 +144,9 @@ class Regression:
             if int(band_4test) == 17:
                 print "Band 17 Regression is deactivated "
                 return False,0,0
+            if not scenario_4test in REG_SCENARIO or not int(band_4test) in REG_BAND:
+                print "scenario/Band Not supported"
+                return False,0,0
         except:
             pass
             

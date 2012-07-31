@@ -466,16 +466,16 @@ class CallboxTest():
             self.band = 1
             scen_name = scen_name.replace("BAND1_", "")
 
-        if re.search('DL', scen_name):
+        if re.search('COMB', scen_name):
             self.dl = 1
-            self.regression_delta = REGRESSION_DELTA_DOWNLINK
+            self.ul = 1
+            self.regression_delta = REGRESSION_DELTA_UPLINK
         elif re.search("UL", scen_name) :
             self.ul = 1
             self.regression_delta = REGRESSION_DELTA_UPLINK
-        elif re.search("COMB_DLUL", scen_name) :
+        elif re.search("DL", scen_name) :
             self.dl = 1
-            self.ul = 1
-            self.regression_delta = REGRESSION_DELTA_UPLINK
+            self.regression_delta = REGRESSION_DELTA_DOWNLINK
         else:
             self.regression_delta = REGRESSION_DELTA_DOWNLINK
             print "ERROR: test not conformed"
@@ -1326,6 +1326,7 @@ class CallboxTest():
             self.callbox.write("CONFigure:DATA:MEAS1:IPERf:CLIENT1:ENABLE ON")
         if self.ul:
             ul_rate = self.get_therical_throughput("UL")
+            #print IPERF_UL+str(ul_rate)+"M"
             os.system(IPERF_UL+str(ul_rate)+"M")
 
     def start_ftp(self, dl_file_size):
@@ -1905,7 +1906,7 @@ class CallboxTest():
         self.excel()
         
         try:
-            shutil.copy2(EXCEL_FILE,RESULT_LOC+EXCEL_FILE)
+            shutil.copy2(EXCEL_FILE,RESULT_LOC)
         except:
             pass
             
@@ -2218,8 +2219,8 @@ class CallboxTest():
         # 5) - Add CL and update general status...
         write_row.write(COL_CL, self.cl, changelist_style)
         write_row.write(COL_CL+2,branch,changelist_style)
-        write_row.write(COL_HEAPINFO,self.dxp0_heap,cell_style)
-        write_row.write(COL_HEAPINFO+1,self.dxp1_heap,cell_style)
+        write_row.write(COL_HEAPINFO,int(self.dxp0_heap),cell_style)
+        write_row.write(COL_HEAPINFO+1,int(self.dxp1_heap),cell_style)
         
         #write_row.wrtie(COL_CL+3,self.remark,changelist_style) #NSAIT DEBUG
         if self.status == STATUS_ASSERT:
@@ -2523,7 +2524,7 @@ class CallboxTest():
 
         try:
             #print "EXCEL Copy Not active"
-            shutil.copy2(EXCEL_FILE,RESULT_LOC+EXCEL_FILE)
+            shutil.copy2(EXCEL_FILE,RESULT_LOC)
         except:
             pass
 
