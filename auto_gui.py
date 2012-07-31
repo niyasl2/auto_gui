@@ -1962,8 +1962,12 @@ class CallboxTest():
             self.compute_throughput()
         # Update excel file
         self.excel()
-        os.system("copy "+ EXCEL_FILE + " \\\\serv2\\eng\\nsait\\") # get test results after each scenario
-
+        
+        try:
+            shutil.copy2(EXCEL_FILE,RESULT_LOC+EXCEL_FILE)
+        except:
+            pass
+            
     def config_allowed_for_cat2(self, rb, tbsidx):
         if tbsidx > 25 or rb > 50:
             # Limitation for our software

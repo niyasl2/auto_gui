@@ -143,8 +143,10 @@ ALLOWED_FTP = [
     "IP_DL_MIMO_AM_RB42_TBS24"
     #"IP_DL_MIMO_AM_FIND_MAX_DEFAULT"
     ]
-    
+
+#For UDP , Stop Condition    
 NB_CPULOAD = 100
+
 force_find_reg_after_attach_fail = False
 
 MAX_TEST_TIME = 3600 * 2
