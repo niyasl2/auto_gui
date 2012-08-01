@@ -30,10 +30,13 @@ class Chart:
         # self.chart_overall(4,465871,5,scenario_implemented)
         # self.chart_overall(17,470549,1,scenario_implemented)
         #dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul = self.Get_CL_Values("4","470175",scenario_implemented[1],'cr3')
-        print self.get_scenario_status('cr3',4,scenario_implemented[2],470820)
-        print self.good_cl('cr3',4,scenario_implemented[len(scenario_implemented)-1],466921)
+        self.excel = EXCEL_FLIST[1]
+        #print self.scenario_value_request(4,478320,scenario_implemented[1],5)
+        self.chart_scenario(4,478320,10,scenario_implemented[1],'cr3')
+        #print self.get_scenario_status('cr3',4,scenario_implemented[2],470820)
+        #print self.good_cl('cr3',4,scenario_implemented[len(scenario_implemented)-1],466921)
 
-    def chart_scenario(self,band,cl,no=5,scen=scenario_implemented,branch='main'):
+    def chart_scenario2(self,band,cl,no=5,scen=scenario_implemented,branch='main'):
         try:
             i = Tools().find_index(BRANCH_ALLOWED,branch)
             self.excel = EXCEL_FLIST[i] 
@@ -44,6 +47,20 @@ class Chart:
             self.draw_scenario(dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul,cl_list,band,100,scen,branch)
         except:
             Tools().sendMail("Exception Thrown inside Chart Scenario")
+            
+    def chart_scenario(self,band,cl,no=5,scen=scenario_implemented,branch='main'):
+        try:
+            i = Tools().find_index(BRANCH_ALLOWED,branch)
+            self.excel = EXCEL_FLIST[i] 
+            (found,cl_list,dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul)=self.scenario_value_request(band,cl,scen,no)
+            #print found,cl_list,dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul
+            if found != True :
+                return
+
+            self.draw_scenario(dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul,cl_list,band,100,scen,branch)
+        except:
+            Tools().sendMail("Exception Thrown inside Chart Scenario")
+   
             
     def Get_CL_Values(self,band,cl,scen=scenario_implemented,branch='main'):
  
@@ -77,7 +94,7 @@ class Chart:
         return hex(rgb0)[2:] + hex(rgb1)[2:] + hex(rgb2)[2:]
 
 
-    def draw_scenario(self,dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul,cl_list,band,max_y,scen,branch):
+    def draw_scenario2(self,dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul,cl_list,band,max_y,scen,branch):
 
         chart = GroupedVerticalBarChart(1000,300,
                                         y_range=(0,max_y))
@@ -168,6 +185,88 @@ class Chart:
         dir = 'chart\\'
         chart.download(dir+title+str(band)+'.jpeg')
         #shutil.copy2('img\dxp04.jpeg', self.callbox_path+'\dxp04.jpeg')
+
+
+
+    def draw_scenario(self,dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul,cl_list,band,max_y,scen,branch):
+
+        chart = GroupedVerticalBarChart(1000,300,
+                                        y_range=(0,max_y))
+
+        fixed_color =['ff154d', '7fff00' ,'0000ff','db7093','9f9f5f']
+
+        color = []
+        for i in range(0,len(cl_list)):
+            if i < 5 :
+                color.append(fixed_color[i])
+            else:
+                color.append(self.triplet(randint(100, 255), randint(100, 255), randint(100, 255)))
+
+        chart.set_colours(color)
+
+        #chart.set_colours(['76A4FB', '224499','208020', '80C65A','FF0000'])
+        cl_status = []
+        for cl in cl_list:
+            cl_status.append(cl+self.get_scenario_status(branch,band,scen,cl))
+        chart.set_legend(cl_status)
+        chart.set_grid(0,5, 5, 5)
+        #print scen
+        if re.search('DL',scen) and re.search('UL',scen) :
+            for i in range(0,len(cl_list)):
+                chart.add_data([dxp0[i],dxp1[i],cpu_dl[i],ftp_dl[i],cpu_ul[i],ftp_ul[i]])
+            for i in range(0,len(cl_list)):
+                dxp0[i]=int(round(dxp0[i]))
+                dxp1[i]=int(round(dxp1[i]))
+                cpu_dl[i]=int(round(cpu_dl[i]))
+                ftp_dl[i]=int(round(ftp_dl[i]))
+                cpu_ul[i]=int(round(cpu_ul[i]))
+                ftp_ul[i]=int(round(ftp_ul[i]))
+            index=chart.set_axis_labels(Axis.TOP,[dxp0,dxp1,cpu_dl,ftp_dl,cpu_ul,ftp_ul])
+            index=chart.set_axis_labels(Axis.BOTTOM,["dxp0","dxp1","CPU_DL","FTP_DL","CPU_UL","FTP_UL"])
+            chart.set_bar_width(18)
+
+        elif re.search('DL',scen): 
+            for i in range(0,len(cl_list)):
+                chart.add_data([dxp0[i],dxp1[i],cpu_dl[i],ftp_dl[i]])
+            for i in range(0,len(cl_list)):
+                dxp0[i]=int(round(dxp0[i]))
+                dxp1[i]=int(round(dxp1[i]))
+                cpu_dl[i]=int(round(cpu_dl[i]))
+                ftp_dl[i]=int(round(ftp_dl[i]))
+            index=chart.set_axis_labels(Axis.TOP,[dxp0,dxp1,cpu_dl,ftp_dl])
+            
+            index=chart.set_axis_labels(Axis.BOTTOM,["dxp0","dxp1","CPU_DL","FTP_DL"])
+            if(len(cl_list)<5):
+                chart.set_bar_width(36)
+            else:
+                chart.set_bar_width(18)
+
+        elif re.search('UL',scen):
+            for i in range(0,len(cl_list)):
+                chart.add_data([dxp0[i],dxp1[i],cpu_ul[i],ftp_ul[i]])
+            for i in range(0,len(cl_list)):
+                dxp0[i]=int(round(dxp0[i]))
+                dxp1[i]=int(round(dxp1[i]))
+                cpu_ul[i]=int(round(cpu_ul[i]))
+                ftp_ul[i]=int(round(ftp_ul[i]))
+            index=chart.set_axis_labels(Axis.TOP,[dxp0,dxp1,cpu_ul,ftp_ul])
+            index=chart.set_axis_labels(Axis.BOTTOM,["dxp0","dxp1","CPU_UL","FTP_UL"])
+            if(len(cl_list)<5):
+                chart.set_bar_width(36)
+            else:
+                chart.set_bar_width(18)
+
+
+        chart.set_axis_range(Axis.LEFT,0,max_y)
+        chart.set_axis_style(index, colour='000000', \
+                font_size= 12)
+
+        chart_dir = 'chart\\'
+        file = scen+"_"+"Band"+str(band)+"_"+branch+".jpeg"
+        #print "src",chart_dir+file
+        #print "dest",CHART_LOC+'\\\\'+file
+        chart.download(chart_dir+file)
+        #shutil.copy2(chart_dir+file,'\\\\'+CHART_LOC+'\\\\'+file)
 
 
     def init_2d(self,x,y):
@@ -362,6 +461,105 @@ class Chart:
             #chart.add_data(dxp0)
         return True,cl_list,dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul
 
+    def scenario_value_request(self,band,cl,scen_name,no=5):
+
+        k=10
+        cpu_dl = []
+        cpu_ul = []
+        ftp_dl = []
+        ftp_ul = []
+        cl_list = []
+        dxp0 = []
+        dxp1= []
+        read_book = open_workbook(self.excel, formatting_info=True)
+        self.read_sheet = read_book.sheet_by_name("Band%d" % int(band))
+        nrows = self.read_sheet.nrows
+        CL_found, _current_row = self.get_CL_idx(nrows,int(cl))
+        counter = 0
+        if CL_found == False :
+            return False,cl_list,dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul
+
+        #current_row = _current_row
+        for current_row in range(_current_row,LIN_INFO,-1):
+            flag = False
+ 
+            self.current_col, self.status_col = self.get_column_for_test(self.read_sheet,scen_name)
+
+            cpu_lo,cpu_hi = self.get_column_for_test(self.read_sheet,"CPU",self.current_col,self.status_col,1)
+
+            try:
+                if self.read_sheet.cell(current_row,cpu_lo).value != "" :
+                    flag = True
+                    dxp1.append(float(self.read_sheet.cell(current_row,cpu_lo).value))
+            except:
+                pass
+
+                #dxp0=(float(self.read_sheet.cell(current_row,cpu_lo).value))
+
+            try:
+                if self.read_sheet.cell(current_row,cpu_lo+1).value != "" :
+                    flag = True
+                # dxp1[i][j]=(float(self.read_sheet.cell(current_row,cpu_lo+1).value))
+                    dxp0.append(float(self.read_sheet.cell(current_row,cpu_lo+1).value))
+            except:
+                pass
+
+            dl_lo,dl_hi = self.get_column_for_test(self.read_sheet,"DL Rate (Mb/s)",self.current_col,self.status_col,2)
+
+            if dl_lo !=0 :
+                if self.read_sheet.cell(current_row,dl_lo+1).value != "" :
+                    flag = True
+                   # cpu_dl=(float(self.read_sheet.cell(current_row,dl_lo+1).value))
+                    try:
+                        cpu_dl.append(float(self.read_sheet.cell(current_row,dl_lo+1).value))
+                    except:
+                        pass
+            ul_lo,ul_hi = self.get_column_for_test(self.read_sheet,"UL Rate (Mb/s)",self.current_col,self.status_col,2)
+
+            if ul_lo !=0 :
+                if self.read_sheet.cell(current_row,ul_lo+1).value != "" :
+                    flag = True
+                    # cpu_ul=(float(self.read_sheet.cell(current_row,ul_lo+1).value))
+                    try:
+                        cpu_ul.append(float(self.read_sheet.cell(current_row,ul_lo+1).value))
+                    except:
+                        pass
+
+            ftp_lo,ftp_hi =  self.get_column_for_test(self.read_sheet,"FTP",self.current_col,self.status_col,1)
+
+            ftp_cdl =  self.get_column_for_ftp(self.read_sheet,"DL(Mb/s)",ftp_lo,ftp_hi,1)
+
+            if ftp_cdl !=0 :
+                if self.read_sheet.cell(current_row,ftp_cdl).value != "" :
+                    flag = True
+                    # ftp_dl=(float(self.read_sheet.cell(current_row,ftp_cdl).value))
+                    try:
+                        ftp_dl.append(float(self.read_sheet.cell(current_row,ftp_cdl).value))
+                    except:
+                        print ""
+            ftp_cul =  self.get_column_for_ftp(self.read_sheet,"UL(Mb/s)",ftp_lo,ftp_hi,1)
+
+            if ftp_cul !=0 :
+                if self.read_sheet.cell(current_row,ftp_cul).value != "" :
+                    flag = True
+                    # ftp_ul=(float(self.read_sheet.cell(current_row,ftp_cul).value))
+                    try:
+                        ftp_ul.append(float(self.read_sheet.cell(current_row,ftp_cul).value))
+                    except:
+                        pass
+            
+            if str(int(self.read_sheet.cell(current_row,COL_CL).value)) != "" and flag:
+                cl_list.append(str(int(self.read_sheet.cell(current_row,COL_CL).value)))
+
+            if flag:
+                counter += 1
+                
+            if counter == no :
+                break
+        
+        return True,cl_list,dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul
+        
+        
 
     def get_scenario_status(self,branch,band,scen_name,cl):
         i = Tools().find_index(BRANCH_ALLOWED,branch)
@@ -376,8 +574,6 @@ class Chart:
 
         current_col, status_col = self.get_column_for_test(self.read_sheet,scen_name)
         status = self.read_sheet.cell(current_row,status_col-1).value
-        print "get scneario status",status
-        print current_row
         return status
 
 
