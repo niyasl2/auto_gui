@@ -570,22 +570,22 @@ class CallboxTest():
         elif scen_name == "FTP_UL_UM_RB45_TBSIDX18_1_FILE":
             self.dl_rb     = 10
             self.dl_tbsidx = 9
-            self.ul_rb     = 45
-            self.ul_tbsidx = 18
+            self.ul_rb     = 50
+            self.ul_tbsidx = 21
             self.num_files_in_ul = 1
         elif scen_name == "FTP_UL_AM_RB45_TBSIDX18_2_FILES" or scen_name == "UDP_UL_AM_RB45_TBSIDX18_2_FILES":
             self.dl_rb     = 10
             self.dl_tbsidx = 9
-            self.ul_rb     = 45
-            self.ul_tbsidx = 18
+            self.ul_rb     = 50
+            self.ul_tbsidx = 21
             self.num_files_in_ul = 2
             self.rlc_mode = "AM"
             self.ul_file_size = 500
         elif scen_name == "FTP_UL_AM_RB40_TBSIDX16_2_FILES":
             self.dl_rb     = 4
             self.dl_tbsidx = 15
-            self.ul_rb     = 40
-            self.ul_tbsidx = 16
+            self.ul_rb     = 50
+            self.ul_tbsidx = 21
             self.num_files_in_ul = 2
             self.rlc_mode = "AM"
             self.ul_file_size = 500
@@ -593,15 +593,15 @@ class CallboxTest():
             self.dl_rb     = 10
             self.dl_tbsidx = 9
             self.ul_rb     = 50
-            self.ul_tbsidx = 18
+            self.ul_tbsidx = 21
             self.num_files_in_ul = 2
             self.rlc_mode = "AM"
             self.ul_file_size = 500
         elif scen_name == "FTP_UL_AM_RB45_TBSIDX18_2_FILES" or scen_name == "UDP_UL_AM_RB45_TBSIDX18_2_FILES" :
             self.dl_rb     = 10
             self.dl_tbsidx = 9
-            self.ul_rb     = 45
-            self.ul_tbsidx = 18
+            self.ul_rb     = 50
+            self.ul_tbsidx = 21
             self.num_files_in_ul = 2
             self.rlc_mode = "AM"
             self.ul_file_size = 500 # Added since around CL453170
@@ -1025,18 +1025,18 @@ class CallboxTest():
         self.at.send('at+cfun=0')
         self.at.sendhidden('at%debug=99')
         self.at.sendhidden('at%ifullcoredump=1') # activate full coredump
-        time.sleep(10)              # RV - Tune Value need to automate that
+        time.sleep(1)              # RV - Tune Value need to automate that
         # Set RLC mode here                 # RV - CHANGE THE PLACE
         self.config_rlc_mode()
         self.at.send('at%icpuload=0')
         self.at.send('at%isimemu=1')
-        time.sleep(3)
+        time.sleep(1)
         # self.at.send('at%isdns') ### RV - Current workaround to avoid attach issue due to information transfer flag enabled
         # time.sleep(3)
         self.at.send('at+cfun=1')
         self.at.send('at%ifullcoredump=1') # activate full coredump
         self.set_lte_only() # Moved from test_branch for catching assert
-        time.sleep(5)
+        time.sleep(1)
 
     def active_pdpcontext(self):
         self.at.send('at%ipdpact=5,1') # CHECK THAT the action is OK
@@ -2458,7 +2458,8 @@ class CallboxTest():
 
 
     def test_branch(self,branch,test='auto',flash=False,Reg=False,Forced=False,CL=0,Resume=False):
-        #print scenario_implemented
+        global scenario_implemented
+        scenario_implementedx = scenario_implemented
         flashed = False
         if test == 'auto':
             if not os.path.exists(branch) or Resume == False:
@@ -2502,6 +2503,7 @@ class CallboxTest():
                 self.excel_head() # FORCING BAND 4 #Write Assert in Excel Sheet
                 if Reg or test == 'auto':
                     Regression()._run(branch,BAND_TANGO_ALLOWED,scenario_implemented,self.cl)
+                scenario_implemented = scenario_implementedx
                 return
 
         self.retrieve_changelist()
@@ -2528,16 +2530,14 @@ class CallboxTest():
             self.ReTest_Regression()
             Regression()._run(branch,BAND_TANGO_ALLOWED,scenario_implemented,self.cl)
 
-        #os.system("copy "+ EXCEL_FILE + "\\\\" +RESULT_LOC+EXCEL_FILE)
-
         try:
-            #print "EXCEL Copy Not active"
             shutil.copy2(EXCEL_FILE,RESULT_LOC)
         except:
             pass
 
         if os.path.exists(branch) and test == 'auto':
             os.remove(branch)
+        scenario_implemented = scenario_implementedx
         return
 
 
@@ -3090,7 +3090,10 @@ class CallboxTest():
     def main(self,argv=sys.argv[1:]):
         # Set by default the serial Port
         # Parse the arguments
+        
         self.config_init() #NSAIT
+        self.at_commands()
+        return
         self.callbox_comm()
         self.dl=1
         self.ul=1
@@ -3102,7 +3105,21 @@ class CallboxTest():
         #self.ue_startup()
         return
         self.parseArgs(argv)
-
+    
+    def at_commands(self):
+        self.get_ue_port()
+        #self.retrieve_changelist()
+        self.at.send('AT%IAIRCRAFT=0')
+        self.at.send('at+cfun=0')
+        self.at.sendhidden('at%debug=99')
+        self.at.sendhidden('at%ifullcoredump=1')
+        self.at.send('at%icpuload=0')
+        self.at.send('at%isimemu=1')
+        self.at.send('at+cfun=1')
+        time.sleep(3)
+        self.at.send('at%ipdpact=5,1')
+        self.at.send('at%icpuload=1,1,1')
+        #self.at.close()
 #################################################################################################
 # Main script code.
 ################################################################################################

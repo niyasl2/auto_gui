@@ -97,7 +97,7 @@ class Tools:
 
     def ssh_client(self,cmd):
         #server = ssh.Connection(host='sxdbld02', username='gcflab', password='LG!)67wn')
-        server = ssh.Connection(host='frsys1', username='nsait', password='M@ilhot123')
+        server = ssh.Connection(host='frsys1', username='nsait', password='@mailhot@123')
         result = server.execute(cmd)
         return result
         
