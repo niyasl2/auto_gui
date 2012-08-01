@@ -1315,6 +1315,7 @@ class CallboxTest():
                 self.iCtrl.send_cmd('ftp_uplink_stream3')
                 
     def start_udp(self):
+        self.callbox.write("SOURce:DATA:CONTrol:FTP:STATe OFF")
         self.callbox.write("INIT:DATA:MEAS1:IPERf")
         if self.dl:
             self.callbox.write("CONFigure:DATA:MEAS1:IPERf:TDURation 1000")
@@ -1326,8 +1327,7 @@ class CallboxTest():
             self.callbox.write("CONFigure:DATA:MEAS1:IPERf:CLIENT1:ENABLE ON")
         if self.ul:
             ul_rate = self.get_therical_throughput("UL")
-            #print IPERF_UL+str(ul_rate)+"M"
-            os.system(IPERF_UL+str(ul_rate)+"M")
+            os.system(IPERF_UL+str(ul_rate)+"K")
 
     def start_ftp(self, dl_file_size):
         #CARDHU_CODE
@@ -3084,10 +3084,9 @@ class CallboxTest():
         # Parse the arguments
         self.config_init() #NSAIT
         self.callbox_comm()
-        self.cell_siso()
-        self.cell_mimo()
-        self.callbox.write("CONFigure:LTE:SIGN:BAND OB4")
-        self.callbox.write("CONFigure:LTE:SIGN:RFSettings:CHANnel:DL 2175 ;UL?")
+        self.dl=1
+        self.ul=1
+        self.start_udp()
         return
         self.get_ue_port()
         self.retrieve_changelist()
