@@ -2190,8 +2190,12 @@ class CallboxTest():
                 self.current_col = current + 2 + 3 * self.dl + 3 * self.ul
                 pass
         # 4) - Write total rate and size transfered
-
+        
         if self.dl:
+            if common.UDP_PROTO:
+                self.throughput_DL = self.cpu_dl_rate[1]
+                self.size_DL = NB_CPULOAD
+                
             current = self.current_col
             try:
                 self.write_value_in_row_and_check(write_row, self.size_DL, cell_style, NO_CHECK) #CHECK_SAME
@@ -2203,6 +2207,10 @@ class CallboxTest():
                 self.current_col = current + 2
 
         if self.ul:
+            if common.UDP_PROTO:
+                self.throughput_UL_total = self.cpu_ul_rate[1]
+                self.size_UL_total = NB_CPULOAD
+                
             current = self.current_col
             try:
                 if self.size_UL_total == 0:

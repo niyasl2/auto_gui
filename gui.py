@@ -445,22 +445,24 @@ class MyForm(wx.Frame):
 
         bsSelectScenario = wx.BoxSizer ( wx.VERTICAL )
         bsSelectScenariox = []
-        bsSelectScenariox.append(wx.BoxSizer ( wx.HORIZONTAL ))
-        bsSelectScenariox.append(wx.BoxSizer ( wx.HORIZONTAL ))
+        #bsSelectScenariox.append(wx.BoxSizer ( wx.HORIZONTAL ))
+        #bsSelectScenariox.append(wx.BoxSizer ( wx.HORIZONTAL ))
         self.scenR = []
-
+        counter = 0
+        index = -1
         font = wx.Font(7,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_LIGHT)
 
         for i in range(0,len(scenario_implemented)):
-            if re.search('MIMO',scenario_implemented[i]):
-                self.scenR.append(wx.CheckBox(self.resultPanel, -1 ,scenario_implemented[i]))
-                #self.scen[i].SetFont(font)
-                bsSelectScenariox[1].Add(self.scenR[i],0, wx.ALL,1)
-            else:
-                self.scenR.append(wx.CheckBox(self.resultPanel, -1 ,scenario_implemented[i]))
-                #self.scen[i].SetFont(font)
-                bsSelectScenariox[0].Add(self.scenR[i],0, wx.ALL,1)
-
+            self.scenR.append(wx.CheckBox(self.resultPanel, -1 ,scenario_implemented[i]))
+            if re.search('FTP',scenario_implemented[i]) :
+                self.scenR[i].SetForegroundColour("#0000ff")
+            elif re.search('UDP',scenario_implemented[i]):
+                self.scenR[i].SetForegroundColour("#db7093")
+            if counter%5 == 0:
+                bsSelectScenariox.append(wx.BoxSizer ( wx.HORIZONTAL ))
+                index += 1
+            bsSelectScenariox[index].Add(self.scenR[i],0, wx.ALL,1)
+            counter += 1
         self.AlltestR = wx.CheckBox(self.resultPanel, -1 ,"All")
         bsSelectScenariox[1].Add(self.AlltestR)
 
@@ -1098,7 +1100,7 @@ class MyForm(wx.Frame):
                 print "Run Test with Flashing"
                 Untar().main(self.entry.GetLabel())
                 Flash().flash_modem(99999,'cr3')
-                if int(self.cl) !=0 :
+                if int(self.cl) !=0 and not os.path.exist(BINARY_LIB+str(self.cl)+'.zlib.wrapped'):
                     shutil.copy2(BINARY_LIB+'99999.zlib.wrapped',BINARY_LIB+str(self.cl)+'.zlib.wrapped')
                 iCT.Init_Auto(self.branch_4test,self.band_4test,self.scenario_4test)
                 iCT.Run_Branch_Test(Forced=self.force.IsChecked(),flash=False,Reg=self.cReg.IsChecked(),CL=self.cl,Resume=self.resume.IsChecked())
