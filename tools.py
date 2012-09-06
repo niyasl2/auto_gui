@@ -42,23 +42,22 @@ class Tools:
         
     def distclean(self,branch,variant="tango-internal"):
         i = self.find_index(BRANCH_ALLOWED,branch)
-        cmd = "cd %s ;qjob make distclean VARIANT=%s "%(build_dir[i],variant)
+        cmd = "cd %s ;qjob -noxterm make distclean VARIANT=%s "%(build_dir[i],variant)
         result = self.ssh_client(cmd)
 
     def build(self,branch,cl,reg=False,variant="tango-internal"):
 
         print "Building ",branch,cl,variant
         i = self.find_index(BRANCH_ALLOWED,branch)
-        print i
-
-        if os.path.exists(BINARY_LIB+str(cl)+".zlib.wrapped"):
+        
+        if os.path.exists(BINARY_LIB+str(cl)+branch+".zlib.wrapped"):
             return BUILD_OK
 
         if os.path.exists(MODEM_BINARY_LOC[i]+"modem-rsa-key0.zlib.wrapped"):
             os.remove(MODEM_BINARY_LOC[i]+"modem-rsa-key0.zlib.wrapped")
 
         #cmd = "cd %s ;p4 sync %s...@%s; make -l ncpus=2 -j6 bin VARIANT=%s "%(build_dir[i],P4BRANCH[i],cl,variant)
-        cmd = "cd %s ;p4 sync %s...@%s; qjob make -l ncpus=2 -j6 bin VARIANT=%s "%(build_dir[i],P4BRANCH[i],cl,variant)
+        cmd = "cd %s ;p4 sync %s...@%s; qjob -noxterm make -l ncpus=2 -j6 bin VARIANT=%s "%(build_dir[i],P4BRANCH[i],cl,variant)
         result = self.ssh_client(cmd)
 
 ##        if self.checkBuild(BUILD_STATUS_LOC[i]+"%s_build_status.txt"%variant) == BUILD_OK :
@@ -67,7 +66,7 @@ class Tools:
 
         if os.path.exists(MODEM_BINARY_LOC[i]+"modem-rsa-key0.zlib.wrapped"):
             print " Build Successful"
-            shutil.copy2(MODEM_BINARY_LOC[i]+"modem-rsa-key0.zlib.wrapped",(BINARY_LIB+str(cl)+".zlib.wrapped"))
+            shutil.copy2(MODEM_BINARY_LOC[i]+"modem-rsa-key0.zlib.wrapped",(BINARY_LIB+str(cl)+branch+".zlib.wrapped"))
             return BUILD_OK
         else:
             if reg:
@@ -75,7 +74,7 @@ class Tools:
                 result = self.ssh_client(cmd) # build again
                 if os.path.exists(MODEM_BINARY_LOC[i]+"modem-rsa-key0.zlib.wrapped"):
                     print " Build Successful After cleaning build dir"
-                    shutil.copy2(MODEM_BINARY_LOC[i]+"modem-rsa-key0.zlib.wrapped",(BINARY_LIB+str(cl)+".zlib.wrapped"))
+                    shutil.copy2(MODEM_BINARY_LOC[i]+"modem-rsa-key0.zlib.wrapped",(BINARY_LIB+str(cl)+branch+".zlib.wrapped"))
                     return BUILD_OK
                     
             msg = r"BUILD FAILURE FOR CL %s BRANCH %s VARIANT %s\n"%(cl,branch,variant)
@@ -231,6 +230,13 @@ class Tools:
         p=subprocess.Popen(cmd,stderr=subprocess.PIPE,shell=True) #NSAIT
         #print "Generate Build Ready with type=%s, owner=%s, branch=%s, variant=%s, CL%s, %s, %s" % (type, owner, branch, variant, cl, test, band)
     
+    def find_average(self,list,threshold):
+        tList = []
+        for i in range(0,len(list)):
+            if(list[i] > threshold):
+                tList.append(list[i])
+        return int(sum(tList)/len(tList))
+        
 def main():
     Tools()._build('main')
     #Tools().sendMail("Hello 2")

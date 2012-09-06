@@ -8,6 +8,7 @@ PLATFORM_ALLOWED = ['win8','woa']
 wlinux = "/eng/nsait/workspace/nsait-main/"
 #wwin = os.path.join("serv2", "home", "gcflab","workspace","callbox-test")
 wwin = os.path.join("serv2", "eng", "nsait","workspace","nsait-main")
+wwinT = os.path.join("serv2", "eng", "nsait","workspace","nsait-testbench")
 variant ="tango-internal"
 build_dir = []
 p4path = []
@@ -26,8 +27,14 @@ for platform in PLATFORM_ALLOWED:
 P4BRANCH = []
 P4BRANCH.append("//software/main.br/")
 P4BRANCH.append("//software/releases/core/cr3.br/")
+P4BRANCH.append("//software/main.br/")
 
-COREDUMP_LOC = os.path.join("serv2", "eng", "nsait","workspace","nsait-main","software","main.br","tools","coredump")
+#FOR CUSTOM TESTS ON TOP OF MAIN
+build_dir[2] = "/eng/nsait/workspace/nsait-testbench/software/main.br/product/datacard/modem/build/"
+MODEM_BINARY_LOC[2] = r"\\%s\software\main.br\product\datacard\modem\build\dxp-%s-obj\EV4\\"%(wwinT,variant)
+###END
+
+COREDUMP_LOC = os.path.join("serv2", "eng", "nsait","workspace","nsait-main","software","cr3.br","tools","coredump")
 #CHART_LOC = os.path.join("serv2.icerasemi.com", "home", "gcflab","workspace","callbox-test","chart")
 #CHART_LOC ='\\\\serv2.icerasemi.com\home\gcflab\workspace\callbox-test\chart\\'
 
@@ -50,7 +57,7 @@ SCHEDULE_BUILD_TIME   = 28800 # Start new build every 8 hours.
 # TIMEOUT_DELAY          = 60   # 60 second delay -> RV - Increase value ?????
 TIMEOUT_DELAY          = 120   # 120 second delay -> RV - Increase value ?????
 UE_STARTUP_ATTEMPT_MAX = 10
-UE_STARTUP_DELAY       =  7
+UE_STARTUP_DELAY       =  3
 NB_CPULOAD_LINES_DISP  = 20
 ATTEMPT_ATTACH_MAX     =  2
 MAX_REG_RETEST = 1
@@ -91,7 +98,7 @@ branch = "main"
 
 REGRESSION_DELTA_DOWNLINK = 0.1  # 10% of acceptable variation for test comparison in DL
 REGRESSION_DELTA_UPLINK = 0.15  # 15% of acceptable variation for test comparison in UL and combDLUL
-REGRESSION_DELTA_DXP = 0.15#0.07 #
+REGRESSION_DELTA_DXP = 0.5#0.07 #
 NB_PRECISION = 2
 
 
@@ -111,12 +118,12 @@ scenario_implemented = [
     "FTP_UL_UM_RB45_TBSIDX18_2_FILES",
     "FTP_COMB_DLUL_2_FILES_UL",
     "FTP_DL_MIMO_AM_RB39_TBS25",
-    "FTP_DL_MIMO_AM_RB42_TBS24",
-    "UDP_DL_SISO_AM_RB50_TBS26",
-    "UDP_UL_AM_RB45_TBSIDX18_2_FILES",
-    "UDP_UL_UM_RB45_TBSIDX18_2_FILES",
-    "UDP_COMB_DLUL_2_FILES_UL",
-    "UDP_DL_MIMO_AM_RB42_TBS24"
+    "FTP_DL_MIMO_AM_RB42_TBS24"
+    #"UDP_DL_SISO_AM_RB50_TBS26",
+    #"UDP_UL_AM_RB45_TBSIDX18_2_FILES",
+    #"UDP_UL_UM_RB45_TBSIDX18_2_FILES",
+    #"UDP_COMB_DLUL_2_FILES_UL",
+    #"UDP_DL_MIMO_AM_RB42_TBS24"
     #"FTP_DL_MIMO_AM_FIND_MAX_DEFAULT"
     ]
 
@@ -124,8 +131,11 @@ REG_SCENARIO = [
 "FTP_DL_SISO_AM_RB50_TBS26",
 "FTP_UL_AM_RB45_TBSIDX18_2_FILES",
 "FTP_COMB_DLUL_2_FILES_UL",
-"FTP_DL_MIMO_AM_RB42_TBS24"
+#"FTP_DL_MIMO_AM_RB42_TBS24"
 ]
+
+SCEN_ALLOWED_BAND4 = scenario_implemented
+SCEN_ALLOWED_BAND17 = ["FTP_DL_SISO_AM_RB50_TBS26"]
 
 REG_BAND=[4]
     
@@ -163,3 +173,6 @@ time_style          = easyxf('alignment: horizontal left;'
 branch_style        = easyxf('alignment: horizontal center;'
                              'border: right thin;')
 
+NB_FILES_DOWNLOAD_MIMO = 2
+NB_FILES_DOWNLOAD_SISO = 1
+NB_FILES_UPLOAD = 3

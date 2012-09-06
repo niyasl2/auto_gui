@@ -223,7 +223,7 @@ class MyForm(wx.Frame):
         bReg = wx.Button(self.pl,-1,label="REG")
         bSetting = wx.Button(self.pl,-1,label="Setting")
         bExit = wx.Button(self.pl,-1,label="Exit")
-        self.Bind(wx.EVT_BUTTON,sys.exit,bExit)
+        self.Bind(wx.EVT_BUTTON,self.eExit,bExit)
         self.Bind(wx.EVT_BUTTON, self.onRun, bStart)
         bsStartSection.Add(bStart,0, wx.ALL,10)
         self.Bind(wx.EVT_BUTTON, self.stopThread, bStop)
@@ -632,6 +632,9 @@ class MyForm(wx.Frame):
         self.optionPanel.Raise()
         self.Bind(wx.EVT_SIZE, self._onSize)
 
+    def eExit(self,event):
+        print ex_var
+            
     def _onShowMain(self, event):
         self.pl.SetPosition((0,0))
         self.resultPanel.Hide()
@@ -1098,10 +1101,11 @@ class MyForm(wx.Frame):
         elif self.testchoice == 1:
             if self.flash.IsChecked() == True and self.entry.GetLabel() != "":
                 print "Run Test with Flashing"
-                Untar().main(self.entry.GetLabel())
-                Flash().flash_modem(99999,'cr3')
-                if int(self.cl) !=0 and not os.path.exist(BINARY_LIB+str(self.cl)+'.zlib.wrapped'):
-                    shutil.copy2(BINARY_LIB+'99999.zlib.wrapped',BINARY_LIB+str(self.cl)+'.zlib.wrapped')
+                Untar().main(self.entry.GetLabel(),self.branch_4test[0])
+                Flash().flash_modem(99999,self.branch_4test[0])
+                #shutil.copy2(BINARY_LIB+'99999.zlib.wrapped',BINARY_LIB+str(self.cl)+self.branch_4test[0]+'.zlib.wrapped')
+                if int(self.cl) !=0 and not os.path.exist(BINARY_LIB+str(self.cl)+self.branch_4test[0]+'.zlib.wrapped'):
+                    shutil.copy2(BINARY_LIB+'99999.zlib.wrapped',BINARY_LIB+str(self.cl)+self.branch_4test[0]+'.zlib.wrapped')
                 iCT.Init_Auto(self.branch_4test,self.band_4test,self.scenario_4test)
                 iCT.Run_Branch_Test(Forced=self.force.IsChecked(),flash=False,Reg=self.cReg.IsChecked(),CL=self.cl,Resume=self.resume.IsChecked())
                 print "Run Test Finished"
@@ -1173,8 +1177,8 @@ class MyForm(wx.Frame):
 
     def flash_thread(self):
         if self.entry.GetLabel() != "" :
-            Untar().main(self.entry.GetLabel())
-            Flash().flash_modem(99999,'cr3')
+            Untar().main(self.entry.GetLabel(),self.branch_4test[0])
+            Flash().flash_modem(99999,self.branch_4test[0])
         else:
             print "Please select a binary to flash"
 

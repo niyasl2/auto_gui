@@ -232,7 +232,7 @@ class Regression:
                 break
             i += 1
 
-        if os.path.exists(BINARY_LIB+cl+".zlib.wrapped"):
+        if os.path.exists(BINARY_LIB+str(cl)+br+".zlib.wrapped"):
             return True
 
         if os.path.exists(file_bld_ready[i]):

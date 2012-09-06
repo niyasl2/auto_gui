@@ -95,11 +95,11 @@ class Untar:
            print "Success."
         return
 
-    def main(self,src):
+    def main(self,src,branch):
         tmp = 'C:\\tmpgz\\'
         tmp_gz =tmp+ 'xyz.tar.gz'
         tmp_rar = tmp+ 'xyz.rar'
-        name = "99999.zlib.wrapped"
+        name = "99999%s.zlib.wrapped"%(branch)
         current_dir = os.getcwd()
         try:
             os.mkdir(tmp)
@@ -142,7 +142,7 @@ class At_debug:
 
         download = []
         #download.append("pushd \\\serv2.icerasemi.com\home\gcflab\workspace\callbox-test\software\main.br\\tools")
-        download.append(r"pushd \\%s\software\main.br\tools"%wwin)
+        download.append(r"pushd \\%s\software\cr3.br\tools"%wwin)
         if option == 'clear_history':
             download.append("at_debug.py -d %s %s"%(str(port),option))
         else:
@@ -203,7 +203,7 @@ class Flash:
                 sys.exit(-1)
             idxArg += 1
 
-    def batch_init(self):
+    def batch_init(self,branch):
         download = []
         idev = device_management()
         #if(int(idev.get_download_port())!=0):
@@ -214,7 +214,7 @@ class Flash:
         else:
             #download.append( ("download_all.exe -v 3 -d %s --mass_storage=None --factory_tests=None --secondary_boot=None --loader=None --iso=None --customConfig=None --deviceConfig=None --productConfig=None --modem=%d.zlib.wrapped ..\product\datacard\modem\\build\dxp-tango-internal-obj\EV4\old_binary"% (self.port,int(self.cl))) )
             # download.append( ("download_all.exe -v 3 -d %s --mass_storage=None --factory_tests=None --secondary_boot=None --loader=None --iso=None --customConfig=None --deviceConfig=None --productConfig=None --modem=%d.zlib.wrapped \\\serv2.icerasemi.com\home\gcflab\workspace\\binary_lib "% (self.port,int(self.cl))) )
-            download.append((r"%s\download_all.exe -v 3 -d %s --mass_storage=None --factory_tests=None --secondary_boot=None --loader=None --iso=None --customConfig=None --deviceConfig=None --productConfig=None --modem=%d.zlib.wrapped %s "% (DOWNLOAD_DIR,self.port,int(self.cl),BINARY_LIB)))
+            download.append((r"%s\download_all.exe -v 3 -d %s --mass_storage=None --factory_tests=None --secondary_boot=None --loader=None --iso=None --customConfig=None --deviceConfig=None --productConfig=None --modem=%d%s.zlib.wrapped %s "% (DOWNLOAD_DIR,self.port,int(self.cl),branch,BINARY_LIB)))
 
         #download.append("popd")
         download.append("echo download > endBatch")
@@ -276,7 +276,7 @@ class Flash:
         self.cl = cl
         self.branch = branch
         if self.cl != 0 :
-            if not os.path.exists(BINARY_LIB+str(self.cl)+".zlib.wrapped"):
+            if not os.path.exists(BINARY_LIB+str(self.cl)+branch+".zlib.wrapped") :
                 status = Tools().build(branch,self.cl)
                 if status != BUILD_OK:
                     print "Build Failure "
@@ -284,7 +284,7 @@ class Flash:
                     
                 #Regression().build_cl(branch,self.cl)n
 
-        self.batch_init()
+        self.batch_init(branch)
         self.download()
 
 if __name__ == '__main__':

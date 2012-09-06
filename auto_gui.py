@@ -400,7 +400,7 @@ class CallboxTest():
         FILE.close()
 
     def run_scenario(self, scen_name,Forced=False):
-        if self.available_scenario_name(scen_name):
+        if self.available_scenario_name(scen_name,Forced):
             self.init_param_for_startup()
             if self.scen_not_pass_yet() or Forced: # Check that the test is not already pass for this CL
                 print "--->Start scenario: %s (in Band%d)" % (scen_name, int(self.band))
@@ -445,7 +445,7 @@ class CallboxTest():
         print "Test to run -> no other condition to check"
         return True
 
-    def available_scenario_name(self, scen_name):
+    def available_scenario_name(self, scen_name,Forced=False):
         self.find_max_dl_rate = 0
         self.dl = 0
         self.ul = 0
@@ -456,10 +456,12 @@ class CallboxTest():
             common.UDP_PROTO = True
         else:
             common.UDP_PROTO = False
+     
         if re.search("BAND17_", scen_name):
             self.band = 17
             scen_name = scen_name.replace("BAND17_", "")
         elif re.search("BAND4_", scen_name):
+           
             self.band = 4
             scen_name = scen_name.replace("BAND4_", "")
         elif re.search("BAND1_", scen_name):
@@ -486,6 +488,15 @@ class CallboxTest():
         self.rlc_mode = "UM"
         self.ltemeas = -1        ##### CHECK THAT DISABLE on main.br
         self.clock = 0
+        
+        if self.band == 17:
+            if not scen_name in SCEN_ALLOWED_BAND17 and Forced == False:
+                    return False
+                    
+        if self.band == 4:
+            if not scen_name in SCEN_ALLOWED_BAND4 and Forced == False:
+                    return False
+                    
         if re.search("FTP_DL_SISO_AM_RB50_TBS25_", scen_name):
             self.tm = 1 # self.tm = 2
             self.dl_rb     = 50
@@ -631,8 +642,8 @@ class CallboxTest():
         elif scen_name == "FTP_UL_UM_RB45_TBSIDX18_2_FILES" or scen_name == "UDP_UL_UM_RB45_TBSIDX18_2_FILES":
             self.dl_rb     = 10
             self.dl_tbsidx = 9
-            self.ul_rb     = 45
-            self.ul_tbsidx = 18
+            self.ul_rb     = 50
+            self.ul_tbsidx = 21
             self.num_files_in_ul = 2
         elif scen_name == "FTP_COMB_DLUL_1_FILE_UL":
             self.dl_rb     = 25
@@ -642,6 +653,7 @@ class CallboxTest():
             self.num_files_in_ul = 1
             self.dl_file_size = 100   # Special Tune to be sure that the DL and UL transfer will terminate at the same time
         elif scen_name == "FTP_COMB_DLUL_2_FILES_UL" or scen_name == "UDP_COMB_DLUL_2_FILES_UL":
+            self.rlc_mode = "AM"
             self.dl_rb     = 25
             self.dl_tbsidx = 24
             self.ul_rb     = 25
@@ -1193,8 +1205,9 @@ class CallboxTest():
         time.sleep(2)
         if device_management().sys_status(False) == "DOWNLOAD_ONLY" or forced == True:
             at_debug=At_debug()
-            at_debug.get_coredump(branch,self.cl,"CL"+str(self.cl)+"_BRANCH_"+branch+self.scen_name+"_Band"+str(self.band)+"_"+time.strftime("%d_%b_%Y_%H_%M_%S", time.gmtime()),"minicoredump")
-            at_debug.get_coredump(branch,self.cl,"CL"+str(self.cl)+"_BRANCH_"+branch+self.scen_name+"_Band"+str(self.band)+"_"+time.strftime("%d_%b_%Y_%H_%M_%S", time.gmtime()),"fullcoredump")
+            #at_debug.get_coredump(branch,self.cl,"CL"+str(self.cl)+"_BRANCH_"+branch+"_"+self.scen_name+"_Band"+str(self.band)+"_"+time.strftime("%d_%b_%Y_%H_%M_%S", time.gmtime()),"minicoredump")
+            #at_debug.get_coredump(branch,self.cl,"CL"+str(self.cl)+"_BRANCH_"+"_"+branch+self.scen_name+"_Band"+str(self.band)+"_"+time.strftime("%d_%b_%Y_%H_%M_%S", time.gmtime()),"fullcoredump")
+            at_debug.get_coredump(branch,self.cl,"CL"+str(self.cl)+"_BRANCH_"+"_"+branch+self.scen_name+"_Band"+str(self.band),"fullcoredump")
             # at_debug.get_coredump(branch,self.cl,"CL"+str(self.cl)+"_BRANCH_"+branch+self.scen_name+"_Band"+str(self.band)+"_"+time.strftime("%d_%b_%Y_%H_%M_%S", time.gmtime()),"clear_history")
 
     def check_assert_report(self, dl_rb, dl_tbsidx):
@@ -1342,36 +1355,25 @@ class CallboxTest():
         #UDP_END
         # Startup the FTP
         if self.dl:
-            self.File_DL = File_download()
-            self.File_DL.set_file("%dMo.txt" % dl_file_size)
-            self.File_DL.set_info(self.cl, int(self.band), self.scen_name)
-            self.File_DL.start()
-            #For MIMO Stablilization
             if re.search("MIMO",self.scen_name):
-                self.File_DL2 = File_download()
-                self.File_DL2.set_file("%dMo.txt" % dl_file_size)
-                self.File_DL2.set_info(self.cl, int(self.band), self.scen_name)
-                self.File_DL2.start()
-##                self.File_DL3 = File_download()
-##                self.File_DL3.set_file("%dMo.txt" % dl_file_size)
-##                self.File_DL3.set_info(self.cl, self.band, self.scen_name)
-##                self.File_DL3.start()
+                nb_loop = NB_FILES_DOWNLOAD_MIMO
+            else:
+                nb_loop = NB_FILES_DOWNLOAD_SISO
+            self.File_DL = []
+             
+            for i in range(0,nb_loop):
+                self.File_DL.append(File_download())
+                self.File_DL[i].set_file("%dMo.txt" % dl_file_size)
+                self.File_DL[i].set_info(self.cl, int(self.band), self.scen_name)
+                self.File_DL[i].start()
 
         if self.ul:
-            self.File_UL1 = File_upload()
-            self.File_UL1.set_file("%dMo_1.txt" % self.ul_file_size)
-            self.File_UL1.set_info(self.cl, int(self.band), self.scen_name)
-            self.File_UL1.start()
-            if self.num_files_in_ul > 1:
-                self.File_UL2 = File_upload()
-                self.File_UL2.set_file("%dMo_2.txt" % self.ul_file_size)
-                self.File_UL2.set_info(self.cl, int(self.band), self.scen_name)
-                self.File_UL2.start()
-            if self.num_files_in_ul > 2:
-                self.File_UL3 = File_upload()
-                self.File_UL3.set_file("%dMo_3.txt" % self.ul_file_size)
-                self.File_UL3.set_info(self.cl, int(self.band), self.scen_name)
-                self.File_UL3.start()
+            self.File_UL = []
+            for i in range(0,NB_FILES_UPLOAD):
+                self.File_UL.append(File_upload())
+                self.File_UL[i].set_file("%dMo_%d.txt" % (self.ul_file_size,i))
+                self.File_UL[i].set_info(self.cl, int(self.band), self.scen_name)
+                self.File_UL[i].start()
 
     def ftp_thread_active(self):
 
@@ -1384,20 +1386,24 @@ class CallboxTest():
             else:
                 return False
         if self.dl:
-            if self.File_DL.isAlive():
-                return True
-            elif re.search("MIMO",self.scen_name):
-                if self.File_DL2.isAlive():
+            if re.search("MIMO",self.scen_name):
+                nb_loop = NB_FILES_DOWNLOAD_MIMO
+            else:
+                nb_loop = NB_FILES_DOWNLOAD_SISO
+                
+            for i in range(0,nb_loop):
+                if self.File_DL[i].isAlive():
                     return True
+            
+            # if self.File_DL.isAlive():
+                # return True
+            # elif re.search("MIMO",self.scen_name):
+                # if self.File_DL2.isAlive():
+                    # return True
         if self.ul:
-            if self.File_UL1.isAlive():
-                return True
-            if self.num_files_in_ul > 1:
-                if self.File_UL2.isAlive():
-                    return True
-            if self.num_files_in_ul > 2:
-                if self.File_UL3.isAlive():
-                    return True
+            for i in range(0,NB_FILES_UPLOAD):
+                if self.File_UL[i].isAlive():
+                    return True 
         return False
 
     def get_cpuload(self, time_cpuload):
@@ -1449,7 +1455,8 @@ class CallboxTest():
                 dropped_tti_list += [int(i) for i in re.findall('DROPPED_TTI=\s*(\d+),',ave_cpuload)] # Add ',' to be sure to get complete value since there is a left shifting character
                 # Check that no stuck -> TO FINALIZE
                 if self.dl and len(dl_rate_list)>2:
-                    if dl_rate_list[-1] == 0 and dl_rate_list[-2] == 0:
+                    #if dl_rate_list[-1] == 0 and dl_rate_list[-2] == 0:
+                    if dl_rate_list[-1] < 500 and dl_rate_list[-2] < 500:
                         if self.find_max_dl_rate:
                             print "FIND MAX DL ACTIVATED"
                             if len(self.max_stable_dl_rb):
@@ -1471,7 +1478,8 @@ class CallboxTest():
                             check_rate_while_runing = False
                             count_no_display = 0
                 if self.ul and len(ul_rate_list)>3:
-                    if ul_rate_list[-1] == 0 and ul_rate_list[-2] == 0 and ul_rate_list[-3] == 0:
+                    #if ul_rate_list[-1] == 0 and ul_rate_list[-2] == 0 and ul_rate_list[-3] == 0:
+                    if ul_rate_list[-1] < 500 and ul_rate_list[-2] < 500 and ul_rate_list[-3] < 500:
                         if re.search("OOS_SEARCH", self.scen_name):
                             self.log_msg("Still connected but no more transfer -> Wait for issue with FTP server...")
                         else:
@@ -1486,7 +1494,7 @@ class CallboxTest():
                     check_rate_while_runing = True
                     if self.dl:
                         dl_rate_theorical = int(self.get_therical_throughput("DL"))
-                        ave_dl_rate = int(sum(dl_rate_list)/len(dl_rate_list))
+                        ave_dl_rate = Tools().find_average(dl_rate_list,500)#int(sum(dl_rate_list)/len(dl_rate_list))
                         print "dl_rate_theorical=", dl_rate_theorical
                         print "ave_dl_rate=", ave_dl_rate
                         if ave_dl_rate < int(dl_rate_theorical*0.4):
@@ -1495,7 +1503,7 @@ class CallboxTest():
                             self.power_cycle()
                     if self.ul:
                         ul_rate_theorical = int(self.get_therical_throughput("UL"))
-                        ave_ul_rate = int(sum(ul_rate_list)/len(ul_rate_list))
+                        ave_ul_rate = Tools().find_average(ul_rate_list,500)#int(sum(ul_rate_list)/len(ul_rate_list))
                         print "ul_rate_theorical=", ul_rate_theorical
                         print "ave_ul_rate=", ave_ul_rate
                         if ave_ul_rate < int(ul_rate_theorical*0.4):
@@ -1673,27 +1681,34 @@ class CallboxTest():
             return
         # Retrieve throughput
         if self.dl:
-            try:
-                self.throughput_DL = self.File_DL.get_throughput()*8
-                self.size_DL = round(self.File_DL.get_dl_size()/1024)
-                if re.search("MIMO",self.scen_name):
-                    self.throughput_DL +=  self.File_DL2.get_throughput()*8
-                    self.size_DL += round(self.File_DL2.get_dl_size()/1024)
-                    #self.throughput_DL +=  self.File_DL3.get_throughput()*8
-                    #self.size_DL += round(self.File_DL3.get_dl_size()/1024)
-                self.throughput_DL = round(float(self.throughput_DL)/1024, NB_PRECISION)
-            except:
-                pass
+            self.throughput_DL = 0
+            self.size_DL = 0
+            if re.search("MIMO",self.scen_name):
+                nb_loop = NB_FILES_DOWNLOAD_MIMO
+            else:
+                nb_loop = NB_FILES_DOWNLOAD_SISO
+             
+            for i in range(0,nb_loop):
+                try:
+                    self.throughput_DL += self.File_DL[i].get_throughput()*8
+                    self.size_DL += round(self.File_DL[i].get_dl_size()/1024)
+                    # if re.search("MIMO",self.scen_name):
+                        # self.throughput_DL +=  self.File_DL2.get_throughput()*8
+                        # self.size_DL += round(self.File_DL2.get_dl_size()/1024)
+                        # #self.throughput_DL +=  self.File_DL3.get_throughput()*8
+                        # #self.size_DL += round(self.File_DL3.get_dl_size()/1024)
+                    
+                except:
+                    raise
+            self.throughput_DL = round(float(self.throughput_DL)/1024, NB_PRECISION)
+            
         if self.ul:
             try:
-                throughput_UL_total = self.File_UL1.get_throughput()*8
-                self.size_UL_total = round(self.File_UL1.get_ul_size()/1024)
-                if self.num_files_in_ul > 1:
-                    throughput_UL_total += self.File_UL2.get_throughput()*8
-                    self.size_UL_total += round(self.File_UL2.get_ul_size()/1024)
-                if self.num_files_in_ul > 2:
-                    throughput_UL_total += self.File_UL3.get_throughput()*8
-                    self.size_UL_total += round(self.File_UL3.get_ul_size()/1024)
+                throughput_UL_total = 0
+                self.size_UL_total = 0
+                for i in range(0,NB_FILES_UPLOAD):
+                    throughput_UL_total += self.File_UL[i].get_throughput()*8
+                    self.size_UL_total += round(self.File_UL[i].get_ul_size()/1024)
                 self.throughput_UL_total = round(float(throughput_UL_total)/1024, NB_PRECISION)
             except:
                 pass
@@ -2563,7 +2578,7 @@ class CallboxTest():
 
 
     def ReTest_Regression(self):
-        print "ReTesting Regression / Assert cases up to %d times " % MAX_REG_RETEST
+        #print "ReTesting Regression / Assert cases up to %d times " % MAX_REG_RETEST
         self.nb_run = 1
         for r in range(0,MAX_REG_RETEST) :
             self.nb_run += 1
@@ -2603,20 +2618,22 @@ class CallboxTest():
                 # END OF BAND LOOP
 
             if reg_cases_4 == [] :
-                print "No Regression / Assert for Band 4 "
+                pass
+                #print "No Regression / Assert for Band 4 "
             else :
                 for scen in reg_cases_4 :
-                    print "REGRESSION RE-TEST CASE [ Band 4 ] : %s" % scen
+                    #print "REGRESSION RE-TEST CASE [ Band 4 ] : %s" % scen
                     self.band = 4
                     #msg =  scen+" , NB_OF_RUN: "+str(self.nb_run)
                     #self.log_msg(msg)
                     self.run_scenario(scen,True)
             if reg_cases_17 == [] :
-                print "No Regression / Assert for Band 17 "
+                pass
+                #print "No Regression / Assert for Band 17 "
             else :
                 for scen in reg_cases_17 :
                     self.band = 17
-                    print "REGRESSION RE-TEST CASE [ Band 17 ] : %s" % scen
+                    #print "REGRESSION RE-TEST CASE [ Band 17 ] : %s" % scen
                     #msg = scen+" BAND 17 , NB_OF_RUN: "+str(self.nb_run)
                     #self.log_msg(msg)
                     self.run_scenario(scen,True)
@@ -3111,6 +3128,7 @@ class CallboxTest():
         #self.retrieve_changelist()
         self.at.send('AT%IAIRCRAFT=0')
         self.at.send('at+cfun=0')
+        time.sleep(3)
         self.at.sendhidden('at%debug=99')
         self.at.sendhidden('at%ifullcoredump=1')
         self.at.send('at%icpuload=0')
@@ -3120,6 +3138,9 @@ class CallboxTest():
         self.at.send('at%ipdpact=5,1')
         self.at.send('at%icpuload=1,1,1')
         #self.at.close()
+        os.system('route_add.py')
+        os.system('ipconfig')
+
 #################################################################################################
 # Main script code.
 ################################################################################################

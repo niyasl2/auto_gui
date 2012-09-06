@@ -46,7 +46,7 @@ class Chart:
 
             self.draw_scenario(dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul,cl_list,band,100,scen,branch)
         except:
-            Tools().sendMail("Exception Thrown inside Chart Scenario")
+            print "Exception Thrown inside Chart Scenario"
             
     def chart_scenario(self,band,cl,no=5,scen=scenario_implemented,branch='main'):
         try:
@@ -59,7 +59,8 @@ class Chart:
 
             self.draw_scenario(dxp0,dxp1,cpu_dl,cpu_ul,ftp_dl,ftp_ul,cl_list,band,100,scen,branch)
         except:
-            Tools().sendMail("Exception Thrown inside Chart Scenario")
+            print "Exception Thrown inside Chart Scenario"
+            #Tools().sendMail("Exception Thrown inside Chart Scenario")
    
             
     def Get_CL_Values(self,band,cl,scen=scenario_implemented,branch='main'):
