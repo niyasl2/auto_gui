@@ -58,6 +58,8 @@ class Tools:
 
         #cmd = "cd %s ;p4 sync %s...@%s; make -l ncpus=2 -j6 bin VARIANT=%s "%(build_dir[i],P4BRANCH[i],cl,variant)
         cmd = "cd %s ;p4 sync %s...@%s; qjob -noxterm make -l ncpus=2 -j6 bin VARIANT=%s "%(build_dir[i],P4BRANCH[i],cl,variant)
+        cmd = "cd %s ;p4 sync %s...@%s; qjob -noxterm make -l ncpus=2 -j6 bin VARIANT=%s "%(build_dir[i],P4BRANCH[i],cl,variant)
+        
         result = self.ssh_client(cmd)
 
 ##        if self.checkBuild(BUILD_STATUS_LOC[i]+"%s_build_status.txt"%variant) == BUILD_OK :
@@ -79,7 +81,7 @@ class Tools:
                     
             msg = r"BUILD FAILURE FOR CL %s BRANCH %s VARIANT %s\n"%(cl,branch,variant)
             self.sendMail(msg)
-            file_name = "BUILD_FAILURE_BRANCH_%s_CL_%s"%(branch,str(cl))
+            file_name = "BUILD_FAILURE_BRANCH_%s_CL_%s.txt"%(branch,str(cl))
             try:
                 FILE = open('regression\\'+file_name,'a')
                 for line in result :
@@ -95,23 +97,16 @@ class Tools:
             return BUILD_FAILED
 
     def ssh_client(self,cmd):
-        #server = ssh.Connection(host='sxdbld02', username='gcflab', password='LG!)67wn')
-        server = ssh.Connection(host='frsys1', username='nsait', password='@mailhot@123')
+        server = ssh.Connection(host='frsys1', username='gcflab', password='LG!)67wn')
         result = server.execute(cmd)
         return result
         
-    def ssh_clientGCF(self,cmd):
-        server = ssh.Connection(host='sxdbld02', username='gcflab', password='LG!)67wn')
-        #server = ssh.Connection(host='frsys1', username='nsait', password='M@ilhot123')
-        result = server.execute(cmd)
-        return result
-
     def get_CL_list(self,br,p4br,startCl,endCl):
         cl_list = []
         cmd = "cd %s;p4 changes %s...@%s,@%s" % (br,p4br, startCl, endCl)
-        print "[get_CL_list]",cmd
+        #print "[get_CL_list]",cmd
         result = self.ssh_client(cmd)
-        print result
+        #print result
         for line in result:
             #print line
             try:
@@ -126,7 +121,7 @@ class Tools:
 
     def build_regression(self,branch,ko_cl):
         print "[BUILD_REGRESSION]BUILD FAILURE BRANCH %s CL %s"%(branch,str(ko_cl))
-        self.sendMail(r"[BUILD_REGRESSION]BUILD FAILURE BRANCH %s CL %s"%(branch,ko_cl))
+        #self.sendMail(r"[BUILD_REGRESSION]BUILD FAILURE BRANCH %s CL %s"%(branch,ko_cl))
         i = self.find_index(BRANCH_ALLOWED,branch)
         ok_cl = chart.Chart().last_build_success(branch,ko_cl)
         print "OK_CL",ok_cl
@@ -138,7 +133,7 @@ class Tools:
                 print "Final KO",cl_list[0]
                 try:
                     self.sendMail(r"BUILD FAILURE BRANCH %s KO_CL %s OK_CL%s"%(branch,cl_list[0],cl_list[1]))
-                    file_name = "BUILD_FAILURE_BRANCH_%s_KO_CL_%s_OK_CL%s"%(branch,cl_list[0],cl_list[1])
+                    file_name = "BUILD_FAILURE_BRANCH_%s_KO_CL_%s_OK_CL%s.txt"%(branch,cl_list[0],cl_list[1])
                     FILE = open('regression\\'+file_name,'a')
                     FILE.write(file_name)
                     FILE.close()
@@ -159,11 +154,11 @@ class Tools:
                     ko_cl = nxt_cl
 
     def _build(self,branch,cl=0,variant="tango-internal"):
-        print "Building Branch : ",branch
+        #print "Building Branch : ",branch
         i = self.find_index(BRANCH_ALLOWED,branch)
         if cl == 0:
             cl = self.latest_cl(branch)
-        print "CL",cl
+        #print "CL",cl
         if cl != 0 :
             status = self.build(branch,cl,variant)
 
@@ -176,32 +171,24 @@ class Tools:
 
         return BUILD_FAILED,0
 
-    def sendMailGCF(self,msg):
-        print "Msg to Send",msg
-        cmd = "echo \"%s\" > txt_msg ; cat txt_msg | ssh frlts mail -s \"Test_Issues1\" nsait@nvidia.com " %(msg)
-        self.ssh_clientGCF(cmd)
-        # time.sleep(1)
-        # cmd = "echo \"%s\" > txt_msg ; cat txt_msg | mail -s \"Test_Issues2\" nsait@nvidia.com " %(msg)
-        # self.ssh_clientGCF(cmd)
-        # time.sleep(1)
-        # cmd = "echo \"%s\" > txt_msg ; mail -s \"Test_Issues3\" nsait@nvidia.com < txt_msg" %(msg)
-        # self.ssh_clientGCF(cmd)
-        
-        
     def sendMail(self,msg):
-        print "Msg to Send",msg
-        cmd = "echo \"%s\" > txt_msg ; cat txt_msg | ssh frlts mail -s \"Test_Issues1\" nsait@nvidia.com " %(msg)
+        cmd = "echo \"%s\" > txt_msg ; cat txt_msg | ssh frlts mail -s \"Test_Issues\" %s " %(msg,SUPERVISOR)
         self.ssh_client(cmd)
-        cmd = "echo \"%s\" > txt_msg ; cat txt_msg | mail -s \"Test_Issues2\" nsait@nvidia.com " %(msg)
-        self.ssh_client(cmd)
-        cmd = "echo \"%s\" > txt_msg ; mail -s \"Test_Issues3\" nsait@nvidia.com < txt_msg" %(msg)
-        self.ssh_client(cmd)
-        self.sendMailGCF(msg)
+        
+    # def sendMail(self,msg):
+        # print "Msg to Send",msg
+        # cmd = "echo \"%s\" > txt_msg ; cat txt_msg | ssh frlts mail -s \"Test_Issues\" %s " %(msg,SUPERVISOR)
+        # self.ssh_client(cmd)
+        # cmd = "echo \"%s\" > txt_msg ; cat txt_msg | mail -s \"Test_Issues2\" nsait@nvidia.com " %(msg)
+        # self.ssh_client(cmd)
+        # cmd = "echo \"%s\" > txt_msg ; mail -s \"Test_Issues3\" nsait@nvidia.com < txt_msg" %(msg)
+        # self.ssh_client(cmd)
+        # self.sendMailGCF(msg)
       
     def latest_cl(self,branch):
         i = self.find_index(BRANCH_ALLOWED,branch)
-        print i
-        print "cd %s ; p4 changes -m1 %s..."%(build_dir[i],P4BRANCH[i])
+        #print i
+        #print "cd %s ; p4 changes -m1 %s..."%(build_dir[i],P4BRANCH[i])
         result =  self.ssh_client("cd %s ; p4 changes -m1 %s..."%(build_dir[i],P4BRANCH[i]))
         print result
         for line in result:

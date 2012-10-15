@@ -98,6 +98,7 @@ class File_download (threading.Thread):
             # FILE.close()
         # except:
             # pass
+        _raise = False
         try:
             ftp.retrbinary("RETR " + self.file_downlink, open(self.file_downlink, 'wb').write)
         except:
@@ -107,12 +108,14 @@ class File_download (threading.Thread):
             FILE = open(file_log_message,'a')
             FILE.write("[CL%d Band%d Test:%s] %s\n" % (self.cl, int(self.band), self.scen_name, message))
             FILE.close()
-            raise
+            _raise = True
         duration = time.time() - starttimer
         dl_size = (os.path.getsize(self.file_downlink))/1024
         self.throughput = float(dl_size / duration)
         print "FTP DL get %d kB at %g kbps (%.2f sec)" % (dl_size, self.throughput*8, duration)
         ftp.quit()
+        if(_raise):
+            raise
 
     def get_throughput(self):
         return self.throughput
@@ -1207,7 +1210,7 @@ class CallboxTest():
             at_debug=At_debug()
             #at_debug.get_coredump(branch,self.cl,"CL"+str(self.cl)+"_BRANCH_"+branch+"_"+self.scen_name+"_Band"+str(self.band)+"_"+time.strftime("%d_%b_%Y_%H_%M_%S", time.gmtime()),"minicoredump")
             #at_debug.get_coredump(branch,self.cl,"CL"+str(self.cl)+"_BRANCH_"+"_"+branch+self.scen_name+"_Band"+str(self.band)+"_"+time.strftime("%d_%b_%Y_%H_%M_%S", time.gmtime()),"fullcoredump")
-            at_debug.get_coredump(branch,self.cl,"CL"+str(self.cl)+"_BRANCH_"+"_"+branch+self.scen_name+"_Band"+str(self.band),"fullcoredump")
+            at_debug.get_coredump(branch,self.cl,str(self.cl)+"_"+branch+"_"+self.scen_name+"_"+str(self.band),"fullcoredump")
             # at_debug.get_coredump(branch,self.cl,"CL"+str(self.cl)+"_BRANCH_"+branch+self.scen_name+"_Band"+str(self.band)+"_"+time.strftime("%d_%b_%Y_%H_%M_%S", time.gmtime()),"clear_history")
 
     def check_assert_report(self, dl_rb, dl_tbsidx):
@@ -1455,8 +1458,8 @@ class CallboxTest():
                 dropped_tti_list += [int(i) for i in re.findall('DROPPED_TTI=\s*(\d+),',ave_cpuload)] # Add ',' to be sure to get complete value since there is a left shifting character
                 # Check that no stuck -> TO FINALIZE
                 if self.dl and len(dl_rate_list)>2:
-                    #if dl_rate_list[-1] == 0 and dl_rate_list[-2] == 0:
-                    if dl_rate_list[-1] < 500 and dl_rate_list[-2] < 500:
+                    if dl_rate_list[-1] == 0 and dl_rate_list[-2] == 0:
+                    #if dl_rate_list[-1] < 500 and dl_rate_list[-2] < 500:
                         if self.find_max_dl_rate:
                             print "FIND MAX DL ACTIVATED"
                             if len(self.max_stable_dl_rb):
@@ -1478,8 +1481,8 @@ class CallboxTest():
                             check_rate_while_runing = False
                             count_no_display = 0
                 if self.ul and len(ul_rate_list)>3:
-                    #if ul_rate_list[-1] == 0 and ul_rate_list[-2] == 0 and ul_rate_list[-3] == 0:
-                    if ul_rate_list[-1] < 500 and ul_rate_list[-2] < 500 and ul_rate_list[-3] < 500:
+                    if ul_rate_list[-1] == 0 and ul_rate_list[-2] == 0 and ul_rate_list[-3] == 0:
+                    #if ul_rate_list[-1] < 500 and ul_rate_list[-2] < 500 and ul_rate_list[-3] < 500:
                         if re.search("OOS_SEARCH", self.scen_name):
                             self.log_msg("Still connected but no more transfer -> Wait for issue with FTP server...")
                         else:
@@ -2451,7 +2454,6 @@ class CallboxTest():
     def start(self,Res=False):
         global branch , EXCEL_FILE
         timer = time.time()
-        SCHEDULED_BUILD_TIME = 3600*4
         timer = 0
         self.remark = " "
         while True:
@@ -2467,7 +2469,7 @@ class CallboxTest():
 
                 time_left = SCHEDULED_BUILD_TIME - ( time.time() - timer )
                 self.print_with_time("Next build in %s sec..." % time_left )
-                print " TIME LEFT : "
+                #print " TIME LEFT : "
 
             time.sleep(10)
 
@@ -2619,24 +2621,18 @@ class CallboxTest():
 
             if reg_cases_4 == [] :
                 pass
-                #print "No Regression / Assert for Band 4 "
             else :
                 for scen in reg_cases_4 :
-                    #print "REGRESSION RE-TEST CASE [ Band 4 ] : %s" % scen
                     self.band = 4
-                    #msg =  scen+" , NB_OF_RUN: "+str(self.nb_run)
-                    #self.log_msg(msg)
-                    self.run_scenario(scen,True)
+                    if  scen in SCEN_ALLOWED_BAND4:
+                        self.run_scenario(scen,True)
             if reg_cases_17 == [] :
                 pass
-                #print "No Regression / Assert for Band 17 "
             else :
                 for scen in reg_cases_17 :
                     self.band = 17
-                    #print "REGRESSION RE-TEST CASE [ Band 17 ] : %s" % scen
-                    #msg = scen+" BAND 17 , NB_OF_RUN: "+str(self.nb_run)
-                    #self.log_msg(msg)
-                    self.run_scenario(scen,True)
+                    if  scen in SCEN_ALLOWED_BAND17:
+                        self.run_scenario(scen,True)
 
     def rerun_scenario(self, scen_name):
         if self.available_scenario_name(scen_name):
@@ -3017,7 +3013,7 @@ class CallboxTest():
         branch = "cr3.br"
         Chart().chart_scenario(self.band,self.cl,5,self.scen_name,branch)
         at_debug=At_debug()
-        at_debug.get_coredump(branch,"CL"+str(self.cl)+self.scen_name+"_Band"+str(self.band)+"_"+time.strftime("%d_%b_%Y_%H_%M_%S", time.gmtime()),"fullcoredump")
+        #at_debug.get_coredump(branch,str(self.cl)+"_"+self.scen_name+"_"+str(self.band)+"_"+time.strftime("%d_%b_%Y_%H_%M_%S", time.gmtime()),"fullcoredump")
 
         return
         devcon=device_management()

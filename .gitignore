@@ -4,12 +4,13 @@ download_all/*
 assert/*.*
 chart/*.*
 *.jpg
-regression/*.*
+regression/*
 *.pyc
 icera/*.*
 endBatch
 *.txt
-log_message.txt
+log*
+*.gz
 #################
 ## Eclipse
 #################

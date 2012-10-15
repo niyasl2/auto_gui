@@ -99,20 +99,18 @@ class Regression:
         scenario = Tools().string_array(scenario)
         branch = Tools().string_array(branch)
         branch = branch[0]
-        
-        print "[FR][_run] band",band
-        print "[FR][_run] scenario",scenario
+
         for b in band :
             for scen in scenario:
-                print "Regression Run ", branch,band,scenario,cl
+                #print "Regression Run ", branch,band,scenario,cl
                 status = chart.Chart().get_scenario_status(branch,b,scen,cl)
-                print "Status for the scenario",status
+                #print "Status for the scenario",status
                 if status in EXCEL_STATUS and status != STATUS_OK :
                     (prev_cl,prev_stat) =  chart.Chart().previous_cl_status(branch,b,scen,cl)
                     if str(prev_stat) != str(status) :    
                         ref_cl = chart.Chart().good_cl(branch,b,scen,cl)
-                        print "Ref_CL",ref_cl
-                        print branch , b , scen , ref_cl , cl
+                        #print "Ref_CL",ref_cl
+                        #print branch , b , scen , ref_cl , cl
                         if ref_cl != "ERROR" :
                             stat,ko_cl,ok_cl=self.find_regression(branch,b,scen,ref_cl,cl)
                             if stat:
@@ -150,9 +148,9 @@ class Regression:
         except:
             pass
             
-        print branch_4test , band_4test, scenario_4test , ok_cl,ko_cl
+        #print branch_4test , band_4test, scenario_4test , ok_cl,ko_cl
         
-        Tools().sendMail(r"Find Regression For Branch %s , Band %s , Scen %s , OK_CL %s , KO_CL %s"%(branch_4test,str(band_4test),scenario_4test,str(ok_cl),str(ko_cl)))
+        #Tools().sendMail(r"Find Regression For Branch %s , Band %s , Scen %s , OK_CL %s , KO_CL %s"%(branch_4test,str(band_4test),scenario_4test,str(ok_cl),str(ko_cl)))
         self.init()
         self.branch_4test = branch_4test
         self.band_4test = band_4test
@@ -162,10 +160,10 @@ class Regression:
         
         i = Tools().find_index(BRANCH_ALLOWED,branch_4test)
 
-        print "[FR][f_r] Block 1 "
+        #print "[FR][f_r] Block 1 "
         while True :
             cl_list = self.get_CL_list(build_dir[i],P4BRANCH[i],ok_cl,ko_cl)
-            print "[FR][f_r] cl_list ",cl_list
+            #print "[FR][f_r] cl_list ",cl_list
             if(len(cl_list)) == 2 :
                 print "Final OK ",cl_list[1]
                 print "Final KO",cl_list[0]
@@ -209,11 +207,11 @@ class Regression:
     def get_CL_list(self,br,p4br,startCl,endCl):
         cl_list = []
         cmd = "cd %s;p4 changes %s...@%s,@%s" % (br,p4br, startCl, endCl)
-        print "[FR][get_CL_list] cmd",cmd
+        #print "[FR][get_CL_list] cmd",cmd
         result = Tools().ssh_client(cmd)
         print "[FR][get_CL_list] Result",result
         for line in result:
-            print "[FR][get_CL_list] line",line
+            #print "[FR][get_CL_list] line",line
             try:
                 cl = re.search(re.compile(r'Change (\S+) on'),line).group(1)
                 if self.failed_build(cl) == False :

@@ -633,7 +633,7 @@ class MyForm(wx.Frame):
         self.Bind(wx.EVT_SIZE, self._onSize)
 
     def eExit(self,event):
-        print ex_var
+        os._exit(1)
             
     def _onShowMain(self, event):
         self.pl.SetPosition((0,0))
@@ -822,15 +822,15 @@ class MyForm(wx.Frame):
         #Option Panel
         if (str(self.atport.GetValue()) != "") :
             common.PORT_COM_TANGO = str(self.atport.GetValue())
-            print "AT Port to use",common.PORT_COM_TANGO
+            #print "AT Port to use",common.PORT_COM_TANGO
 
         if(str(self.modemport.GetValue()) != ""):
             common.MODEM_PORT = str(self.modemport.GetValue())
-            print "Modem Port to use",common.MODEM_PORT
+            #print "Modem Port to use",common.MODEM_PORT
 
         if(str(self.vid_no.GetValue()) != ""):
             common.VID = str(self.vid_no.GetValue())
-            print "VID number to use",common.VID
+            #print "VID number to use",common.VID
 
         try:
             if self.rbplatform.GetSelection() == 0:
@@ -906,12 +906,12 @@ class MyForm(wx.Frame):
         self.t2.start()
 
     def stopThread(self,event):
-        print "Number of Active Threads",threading.activeCount()
+        #print "Number of Active Threads",threading.activeCount()
         if threading.activeCount()>1:
             self.t1.kill() # Autocallbox Thread
             self.t2.kill() # Read_Status Thread
             print "Number of Active Threads",threading.activeCount()
-        print "Number of Active Threads",threading.activeCount()
+        #print "Number of Active Threads",threading.activeCount()
         #self.cleanProgress()
 
     def addProgress(self):
@@ -1068,7 +1068,7 @@ class MyForm(wx.Frame):
         while True:
             if self.kill_thread == True :
                 #self.t1.join()
-                print "Killing Thread"
+                #print "Killing Thread"
                 sys.exit(1)
 
 
@@ -1096,11 +1096,11 @@ class MyForm(wx.Frame):
             iCT.custom_config(rlc=self.tcrlc.GetValue(),dl_rb=int(self.tcdlrb.GetValue()),dl_tb=int(self.tcdltb.GetValue()),ul_rb=int(self.tculrb.GetValue()),ul_tb=int(self.tcultb.GetValue()),dl_size=int(self.tcDownlik_size.GetValue()),ul_size=int(self.tcUplink_size.GetValue()),tm=int(self.tcmode.GetValue()),dir=self.tcDirection.GetValue())
 
         if self.testchoice == 0:
-            print "Call Auto scheduler"
+            #print "Call Auto scheduler"
             iCT.start(Res=self.resume.IsChecked())
         elif self.testchoice == 1:
             if self.flash.IsChecked() == True and self.entry.GetLabel() != "":
-                print "Run Test with Flashing"
+                #print "Run Test with Flashing"
                 Untar().main(self.entry.GetLabel(),self.branch_4test[0])
                 Flash().flash_modem(99999,self.branch_4test[0])
                 #shutil.copy2(BINARY_LIB+'99999.zlib.wrapped',BINARY_LIB+str(self.cl)+self.branch_4test[0]+'.zlib.wrapped')
@@ -1108,11 +1108,11 @@ class MyForm(wx.Frame):
                     shutil.copy2(BINARY_LIB+'99999.zlib.wrapped',BINARY_LIB+str(self.cl)+self.branch_4test[0]+'.zlib.wrapped')
                 iCT.Init_Auto(self.branch_4test,self.band_4test,self.scenario_4test)
                 iCT.Run_Branch_Test(Forced=self.force.IsChecked(),flash=False,Reg=self.cReg.IsChecked(),CL=self.cl,Resume=self.resume.IsChecked())
-                print "Run Test Finished"
+                #print "Run Test Finished"
             else:
-                print "Run Test without Flashing"
+                #print "Run Test without Flashing"
                 iCT.Run_Branch_Test(Forced=self.force.IsChecked(),flash=self.flash.IsChecked(),Reg=self.cReg.IsChecked(),CL=self.cl,Resume=self.resume.IsChecked())
-                print "Run Test Finished"
+                #print "Run Test Finished"
 
         elif self.testchoice == 2:
            print "No Test"

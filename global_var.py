@@ -1,13 +1,13 @@
 import os
 from xlwt import Workbook, easyxf
-
+SUPERVISOR = "nsait@nvidia.com -c rvanin@nvidia.com"
 BAND_TANGO_ALLOWED = [4,17]
 BRANCH_ALLOWED = ['main','cr3','ST']
 PLATFORM_ALLOWED = ['win8','woa']
-#wlinux = "/home/gcflab/workspace/callbox-test/"
-wlinux = "/eng/nsait/workspace/nsait-main/"
-#wwin = os.path.join("serv2", "home", "gcflab","workspace","callbox-test")
-wwin = os.path.join("serv2", "eng", "nsait","workspace","nsait-main")
+wlinux = "/home/gcflab/workspace/callbox-test/"
+#wlinux = "/eng/nsait/workspace/nsait-main/"
+wwin = os.path.join("serv2", "home", "gcflab","workspace","callbox-test")
+#wwin = os.path.join("serv2", "eng", "nsait","workspace","nsait-main")
 wwinT = os.path.join("serv2", "eng", "nsait","workspace","nsait-testbench")
 variant ="tango-internal"
 build_dir = []
@@ -22,7 +22,8 @@ for branch in BRANCH_ALLOWED:
 for platform in PLATFORM_ALLOWED:
     for branch in BRANCH_ALLOWED:
         #EXCEL_FLIST.append('Results_%s_%s.xls'%(branch,platform))
-        EXCEL_FLIST.append(r'\\serv2\eng\nsait\workspace\Results_%s_%s.xls'%(branch,platform))
+        #EXCEL_FLIST.append(r'\\serv2\eng\nsait\workspace\Results_%s_%s.xls'%(branch,platform))
+        EXCEL_FLIST.append(r'\\serv2\home\gcflab\workspace\callbox-test\Results_%s_%s.xls'%(branch,platform))
 
 P4BRANCH = []
 P4BRANCH.append("//software/main.br/")
@@ -34,13 +35,12 @@ build_dir[2] = "/eng/nsait/workspace/nsait-testbench/software/main.br/product/da
 MODEM_BINARY_LOC[2] = r"\\%s\software\main.br\product\datacard\modem\build\dxp-%s-obj\EV4\\"%(wwinT,variant)
 ###END
 
-COREDUMP_LOC = os.path.join("serv2", "eng", "nsait","workspace","nsait-main","software","cr3.br","tools","coredump")
-#CHART_LOC = os.path.join("serv2.icerasemi.com", "home", "gcflab","workspace","callbox-test","chart")
-#CHART_LOC ='\\\\serv2.icerasemi.com\home\gcflab\workspace\callbox-test\chart\\'
+COREDUMP_LOC = os.path.join("serv2", "home", "gcflab","workspace","callbox-test","software","main.br","tools","coredump")
+#COREDUMP_LOC = os.path.join("serv2", "eng", "nsait","workspace","nsait-main","software","cr3.br","tools","coredump")
 
-#auto_callbox_loc = r"C:\Users\nsait\Desktop\auto_gui"
 SYS_STATUS = ['OK','DOWNLOAD_ONLY','ERROR']
-BINARY_LIB = "\\\\serv2\\eng\\nsait\\workspace\\binary_lib\\"
+#BINARY_LIB = "\\\\serv2\\eng\\nsait\\workspace\\binary_lib\\"
+BINARY_LIB = "\\\\serv2\\home\\gcflab\\workspace\\binary_lib\\"
 RESULT_LOC = "\\\\serv2\\home\\gcflab\\workspace\\"
 DOWNLOAD_DIR = r"C:\Users\Administrator\Desktop\auto_gui\download_all\tools"
 
@@ -51,7 +51,7 @@ DOWNLOAD_DIR = r"C:\Users\Administrator\Desktop\auto_gui\download_all\tools"
 # Tune behavior
 force_retest_when_regression_or_assert = False
 
-SCHEDULE_BUILD_TIME   = 28800 # Start new build every 8 hours.
+SCHEDULED_BUILD_TIME   = 3600*4 # Start new build every 8 hours.
 
 # Constants
 # TIMEOUT_DELAY          = 60   # 60 second delay -> RV - Increase value ?????
@@ -129,8 +129,8 @@ scenario_implemented = [
 
 REG_SCENARIO = [
 "FTP_DL_SISO_AM_RB50_TBS26",
-"FTP_UL_AM_RB45_TBSIDX18_2_FILES",
-"FTP_COMB_DLUL_2_FILES_UL",
+"FTP_UL_AM_RB45_TBSIDX18_2_FILES"
+#"FTP_COMB_DLUL_2_FILES_UL",
 #"FTP_DL_MIMO_AM_RB42_TBS24"
 ]
 

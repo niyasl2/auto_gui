@@ -142,7 +142,7 @@ class At_debug:
 
         download = []
         #download.append("pushd \\\serv2.icerasemi.com\home\gcflab\workspace\callbox-test\software\main.br\\tools")
-        download.append(r"pushd \\%s\software\cr3.br\tools"%wwin)
+        download.append(r"pushd \\%s\software\main.br\tools"%wwin)
         if option == 'clear_history':
             download.append("at_debug.py -d %s %s"%(str(port),option))
         else:
