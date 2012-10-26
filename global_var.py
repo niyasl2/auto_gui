@@ -1,6 +1,6 @@
 import os
 from xlwt import Workbook, easyxf
-SUPERVISOR = "nsait@nvidia.com -c rvanin@nvidia.com"
+SUPERVISOR = "nsait@nvidia.com"# -c rvanin@nvidia.com"
 BAND_TANGO_ALLOWED = [4,17]
 BRANCH_ALLOWED = ['main','cr3','ST']
 PLATFORM_ALLOWED = ['win8','woa']

@@ -24,7 +24,7 @@ class device_management():
             else:
                 return 0
         #CARDHU_END
-
+        time.sleep(5)
         self.at_port = 0
         sys.stdout.flush()
         cmd = "devcon find *" + common.VID + "*"
@@ -42,6 +42,7 @@ class device_management():
                 break
 
         sys.stdout.flush()
+        print "AT_PORT ",self.at_port
         return self.at_port
 
     def get_download_port(self):
@@ -64,7 +65,7 @@ class device_management():
         for list in p.stdout:
             list_icera = re.search("Modem Device", list)
             if list_icera != None:
-                #print "FOUND MODEM"
+                print "FOUND MODEM"
                 sys.stdout.flush()
                 return True
 
